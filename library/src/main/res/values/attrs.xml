@@ -1,38 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <attr name="waves_count" format="integer" />
-    <attr name="waves_colors" format="reference" />
-    <attr name="wave_height" format="dimension" />
-    <attr name="footer_height" format="dimension" />
-    <attr name="update_interval" format="integer" />
-    <attr name="interpolation_step" format="float" />
-    <attr name="bubble_size" format="dimension" />
-    <attr name="randomize_bubble_size" format="boolean" />
-    <attr name="layers_count" format="integer" />
-
-    <declare-styleable name="AudioVisualizationView">
-        <attr name="waves_count" />
-        <attr name="waves_colors" />
-        <attr name="wave_height" />
-        <attr name="footer_height" />
-        <attr name="update_interval" />
-        <attr name="interpolation_step" />
-        <attr name="bubble_size" />
-        <attr name="randomize_bubble_size" />
-        <attr name="layers_count" />
-    </declare-styleable>
-
     <declare-styleable name="GLAudioVisualizationView">
-        <attr name="waves_count" />
-        <attr name="waves_colors" />
-        <attr name="wave_height" />
-        <attr name="footer_height" />
-        <attr name="update_interval" />
-        <attr name="interpolation_step" />
-        <attr name="bubble_size" />
-        <attr name="randomize_bubble_size" />
-        <attr name="layers_count" />
+        <attr name="waves_count" format="integer" />
+        <attr name="waves_colors" format="reference" />
+        <attr name="wave_height" format="dimension" />
+        <attr name="footer_height" format="dimension" />
+        <attr name="bubble_size" format="dimension" />
+        <attr name="randomize_bubble_size" format="boolean" />
+        <attr name="layers_count" format="integer" />
         <attr name="background_color" format="color|reference" />
     </declare-styleable>
 </resources>
