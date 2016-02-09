@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.cleveroad.audiovisualization.GLAudioVisualizationView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/visualizer_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:bubble_size="25dp"
+    app:randomize_bubble_size="true"
+    app:wave_height="60dp"
+    app:footer_height="170dp"
+    app:waves_count="7"
+    app:layers_count="4"
+    app:background_color="@color/color_bg"
+    />

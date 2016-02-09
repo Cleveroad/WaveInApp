@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">AudioVisualization</string>
+    <string name="canvas">Canvas</string>
+    <string name="opengl_es">OpenGL ES</string>
+    <string name="title_permissions">Permissions</string>
+    <string name="btn_next">Next</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="toast_permissions_not_granted">Permissions not granted.</string>
+    <string name="message_permissions"><![CDATA[To allow audio visualization view to process audio stream app needs an access to your <b>Microphone</b>.]]></string>
+</resources>
