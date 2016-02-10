@@ -7,6 +7,11 @@ import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
+import android.support.annotation.ArrayRes;
+import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DimenRes;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 
 /**
@@ -22,14 +27,21 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
 	private MediaPlayer.OnPreparedListener innerOnPreparedListener;
 	private MediaPlayer.OnCompletionListener innerOnCompletionListener;
 
-	public GLAudioVisualizationView(Context context) {
-		this(context, null);
+	private GLAudioVisualizationView(@NonNull Builder builder) {
+		super(builder.context);
+		configuration = new Configuration(builder);
+		renderer = new GLRenderer(getContext(), configuration);
+		init();
 	}
 
 	public GLAudioVisualizationView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		configuration = new Configuration(context, attrs, isInEditMode());
 		renderer = new GLRenderer(getContext(), configuration);
+		init();
+	}
+
+	private void init() {
 		setEGLContextClientVersion(EGL_VERSION);
 		setRenderer(renderer);
 		setRenderMode(RENDERMODE_CONTINUOUSLY);
@@ -152,9 +164,13 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
 					if (isInEditMode && arrayId == 0)
 						arrayId = R.array.colors;
 					String[] colorsArray = array.getResources().getStringArray(arrayId);
-					colors = new int[colorsArray.length];
-					for (int i = 0; i < colors.length; i++) {
-						colors[i] = Color.parseColor(colorsArray[i]);
+					if (!Utils.allElementsAreNull(colorsArray)) {
+						colors = new int[colorsArray.length];
+						for (int i = 0; i < colors.length; i++) {
+							colors[i] = Color.parseColor(colorsArray[i]);
+						}
+					} else {
+						colors = context.getResources().getIntArray(arrayId);
 					}
 				}
 			} finally {
@@ -165,11 +181,184 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
 			}
 
 			layerColors = new float[colors.length][];
-			for (int i =0; i<colors.length; i++) {
+			for (int i = 0; i < colors.length; i++) {
 				layerColors[i] = Utils.convertColor(colors[i]);
 			}
 			backgroundColor = Utils.convertColor(bgColor);
 			bubbleSize /= context.getResources().getDisplayMetrics().widthPixels;
+		}
+
+		private Configuration(@NonNull Builder builder) {
+			this.waveHeight = builder.waveHeight;
+			waveHeight = Utils.between(waveHeight, Constants.MIN_WAVE_HEIGHT, Constants.MAX_WAVE_HEIGHT);
+			this.wavesCount = builder.wavesCount;
+			wavesCount = Utils.between(wavesCount, Constants.MIN_WAVES_COUNT, Constants.MAX_WAVES_COUNT);
+			this.layerColors = builder.layerColors;
+			this.bubbleSize = builder.bubbleSize;
+			bubbleSize = Utils.between(bubbleSize, Constants.MIN_BUBBLE_SIZE, Constants.MAX_BUBBLE_SIZE);
+			this.bubbleSize = this.bubbleSize / builder.context.getResources().getDisplayMetrics().widthPixels;
+			this.footerHeight = builder.footerHeight;
+			footerHeight = Utils.between(footerHeight, Constants.MIN_FOOTER_HEIGHT, Constants.MAX_FOOTER_HEIGHT);
+			this.randomizeBubbleSize = builder.randomizeBubbleSize;
+			this.backgroundColor = builder.backgroundColor;
+			this.layersCount = builder.layersCount;
+			layersCount = Utils.between(layersCount, Constants.MIN_LAYERS_COUNT, Constants.MAX_LAYERS_COUNT);
+			if (layerColors.length < layersCount) {
+				throw new IllegalArgumentException("You specified more layers than colors.");
+			}
+		}
+	}
+
+	public static class Builder {
+
+		private Context context;
+		private int wavesCount;
+		private int layersCount;
+		private float bubbleSize;
+		private float waveHeight;
+		private float footerHeight;
+		private boolean randomizeBubbleSize;
+		private float[] backgroundColor;
+		private float[][] layerColors;
+
+		public Builder(@NonNull Context context) {
+			this.context = context;
+		}
+
+		/**
+		 * Set waves count
+		 *
+		 * @param wavesCount waves count
+		 */
+		public Builder setWavesCount(int wavesCount) {
+			this.wavesCount = wavesCount;
+			return this;
+		}
+
+		/**
+		 * Set layers count
+		 *
+		 * @param layersCount layers count
+		 */
+		public Builder setLayersCount(int layersCount) {
+			this.layersCount = layersCount;
+			return this;
+		}
+
+		/**
+		 * Set bubbles size in pixels
+		 *
+		 * @param bubbleSize bubbles size in pixels
+		 */
+		public Builder setBubbleSize(float bubbleSize) {
+			this.bubbleSize = bubbleSize;
+			return this;
+		}
+
+		/**
+		 * Set bubble size from dimension resource
+		 *
+		 * @param bubbleSize dimension resource
+		 */
+		public Builder setBubbleSize(@DimenRes int bubbleSize) {
+			return setBubbleSize((float) context.getResources().getDimensionPixelSize(bubbleSize));
+		}
+
+		/**
+		 * Set wave height in pixels
+		 *
+		 * @param waveHeight wave height in pixels
+		 */
+		public Builder setWaveHeight(float waveHeight) {
+			this.waveHeight = waveHeight;
+			return this;
+		}
+
+		/**
+		 * Set wave height from dimension resource
+		 *
+		 * @param waveHeight dimension resource
+		 */
+		public Builder setWaveHeight(@DimenRes int waveHeight) {
+			return setWaveHeight((float) context.getResources().getDimensionPixelSize(waveHeight));
+		}
+
+		/**
+		 * Set footer height in pixels
+		 *
+		 * @param footerHeight footer height in pixels
+		 */
+		public Builder setFooterHeight(float footerHeight) {
+			this.footerHeight = footerHeight;
+			return this;
+		}
+
+		/**
+		 * Set footer height from dimension resource
+		 *
+		 * @param footerHeight dimension resource
+		 */
+		public Builder setFooterHeight(@DimenRes int footerHeight) {
+			return setFooterHeight((float) context.getResources().getDimensionPixelSize(footerHeight));
+		}
+
+		/**
+		 * Set flag indicates that size of bubbles should be randomized
+		 *
+		 * @param randomizeBubbleSize true if size of bubbles should be randomized, false if size of bubbles must be the same
+		 */
+		public Builder setRandomizeBubbleSize(boolean randomizeBubbleSize) {
+			this.randomizeBubbleSize = randomizeBubbleSize;
+			return this;
+		}
+
+		/**
+		 * Set background color
+		 *
+		 * @param backgroundColor background color
+		 */
+		public Builder setBackgroundColor(@ColorInt int backgroundColor) {
+			this.backgroundColor = Utils.convertColor(backgroundColor);
+			return this;
+		}
+
+		/**
+		 * Set background color from color resource
+		 *
+		 * @param backgroundColor color resource
+		 */
+		public Builder setBackgroundColorRes(@ColorRes int backgroundColor) {
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+				return setBackgroundColor(context.getResources().getColor(backgroundColor, context.getTheme()));
+			//noinspection deprecation
+			return setBackgroundColor(context.getResources().getColor(backgroundColor));
+		}
+
+		/**
+		 * Set layer colors from array resource
+		 *
+		 * @param arrayId array resource
+		 */
+		public Builder setLayerColors(@ArrayRes int arrayId) {
+			String[] colorsArray = context.getResources().getStringArray(arrayId);
+			int[] colors;
+			if (!Utils.allElementsAreNull(colorsArray)) {
+				colors = new int[colorsArray.length];
+				for (int i = 0; i < colors.length; i++) {
+					colors[i] = Color.parseColor(colorsArray[i]);
+				}
+			} else {
+				colors = context.getResources().getIntArray(arrayId);
+			}
+			layerColors = new float[colors.length][];
+			for (int i = 0; i < colors.length; i++) {
+				layerColors[i] = Utils.convertColor(colors[i]);
+			}
+			return this;
+		}
+
+		public GLAudioVisualizationView build() {
+			return new GLAudioVisualizationView(this);
 		}
 	}
 }

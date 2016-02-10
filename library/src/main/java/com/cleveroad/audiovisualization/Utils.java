@@ -92,4 +92,17 @@ class Utils {
 		float perc = between((random.nextInt(100) + 70) / 100, 0.7f, 1.3f);
 		return perc * value;
 	}
+
+	/**
+	 * Check if all elements are null
+	 * @param array some array
+	 * @return true if all elements are null, false otherwise
+	 */
+	public static <T> boolean allElementsAreNull(T[] array) {
+		for (T element : array) {
+			if (element != null)
+				return false;
+		}
+		return true;
+	}
 }
