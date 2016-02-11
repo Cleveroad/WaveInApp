@@ -1,6 +1,6 @@
 # Audio Visualization View #
 
-Implementation of [music player concept](https://dribbble.com/shots/2369760-Player-Concept).
+Implementation of [music player concept](https://dribbble.com/shots/2369760-Player-Concept). Welcome Live Equalizer with wave effect. As animation shows, when music plays the waves are active, and once it is paused or stopped – waves calm down.
 
 ![Demo image](/images/demo.gif)
 
