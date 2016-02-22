@@ -4,6 +4,14 @@ Implementation of [music player concept](https://dribbble.com/shots/2369760-Play
 
 ![Demo image](/images/demo.gif)
 
+To include this library to your project add dependency in **build.gradle** file:
+
+```groovy
+    dependencies {
+        compile 'com.cleveroad:audiovisualization:0.9.0'
+    }
+```
+
 Setup process can be splitted into few steps.
 
 <br />
