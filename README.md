@@ -4,37 +4,40 @@ Implementation of [music player concept](https://dribbble.com/shots/2369760-Play
 
 ![Demo image](/images/demo.gif)
 
+## Setup and usage
+
 To include this library to your project add dependency in **build.gradle** file:
 
 ```groovy
     dependencies {
-        compile 'com.cleveroad:audiovisualization:0.9.0'
+        compile 'com.cleveroad:audiovisualization:0.9.1'
     }
 ```
 
-Setup process can be splitted into few steps.
-
-<br />
-#### Preparing AndroidManifest.xml ####
-* * *
 Audio visualization view uses OpenGL ES 2.0 for drawing waves. So you need to include this line in your manifest:
 
 ```XML        
     <uses-feature android:glEsVersion="0x00020000" android:required="true" />
 ```
 
-All functionality built upon [Visualizer](http://developer.android.com/intl/ru/reference/android/media/audiofx/Visualizer.html) object, so you also need to include this permissions in your manifest:
+##### Using VisualizerDbmHandler
+
+All functionality of this handler built upon [Visualizer](http://developer.android.com/intl/ru/reference/android/media/audiofx/Visualizer.html) object, so you also need to include this permissions in your manifest:
 
 ```XML
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 ```
 
-You must be very careful with new [Android M permissions](http://developer.android.com/intl/ru/training/permissions/requesting.html) flow. Make sure you have all necessary permissions before using **GLAudioVisualizationView**.
+##### Using SpeechRecognizerDbmHandler
 
-<br />
-#### Including **GLAudioVisualizationView** into layout ####
-* * *
+All functionality of this handler built upon [SpeechRecognizer](http://developer.android.com/intl/ru/reference/android/speech/SpeechRecognizer.html) object, so you also need to include this permissions in your manifest:
+
+```XML
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+```
+
+You must be very careful with new [Android M permissions](http://developer.android.com/intl/ru/training/permissions/requesting.html) flow. Make sure you have all necessary permissions before using **GLAudioVisualizationView**.
 
 There are two ways to include **GLAudioVisualizationView** in your layout: directly in XML layout file or using builder in Java code.
 
@@ -47,13 +50,13 @@ Via XML:
         android:id="@+id/visualizer_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:bubble_size="@dimen/bubble_size"
-        app:randomize_bubble_size="true"
-        app:wave_height="@dimen/wave_height"
-        app:footer_height="@dimen/footer_height"
-        app:waves_count="7"
-        app:layers_count="4"
-        app:background_color="@color/color_bg"
+        app:av_bubble_size="@dimen/bubble_size"
+        app:av_randomize_bubble_size="true"
+        app:av_wave_height="@dimen/wave_height"
+        app:av_footer_height="@dimen/footer_height"
+        app:av_waves_count="7"
+        app:av_layers_count="4"
+        app:av_background_color="@color/color_bg"
         />
 ```
 
@@ -71,10 +74,6 @@ Via Java code:
         .setLayerColors(R.array.colors)
         .build();
 ```
-    
-<br />
-#### Usage of **GLAudioVisualizationView** ####
-* * *
 
 **GLAudioVisualizationView** implements **AudioVisualization** interface. If you don't need all [GLSurfaceView](http://developer.android.com/intl/ru/reference/android/opengl/GLSurfaceView.html)'s public methods, you can simply cast your view to **AudioVisualization** interface and use it.
 
@@ -90,18 +89,15 @@ Via Java code:
         audioVisualization = (AudioVisualization) glAudioVisualizationView;
     }
 
-...
-
+    ...
 ```
 
-To connect audio visualization view to audio output you can use **linkTo(int)** or **linkTo(MediaPlayer)** methods.
+To connect audio visualization view to audio output you can use **linkTo(DbmHandler)** method. See **DbmHandler.Factory** class for the list of available handler implementations.
 
 ```JAVA
-    // connecting to device's output mix
-    audioVisualization.linkTo(0);
-    ...
-    MediaPlayer mp = MediaPlayer.create(...);
-    audioVisualization.linkTo(mp);
+    SpeechRecognizerDbmHandler handler = DbmHandler.Factory.newSpeechRecognizerHandler(context);
+    handler.innerRecognitionListener(...);
+    audioVisualization.linkTo(handler);
 ```
 
 You must always call **onPause** method to pause visualization and stop wasting CPU resources for computations in vain. As soon as your view appears in sight of user, call **onResume**. 
@@ -130,10 +126,39 @@ When user leaves screen with audio visualization view, don't forget to free reso
     }
 ```
 
+<br/>
+## Implementing your own DbmHandler
+
+To implement you own data conversion handler, just extend your class from DbmHandler class and implement **onDataReceivedImpl(T object, int layersCount, float[] outDbmValues, float[] outAmpValues)** method where:
+* `object` - your custom data type
+* `layersCount` - count of layers you passed in **Builder**.
+* `outDbmValues` - array with size equals to `layersCount`. You should fill it with **normalized** dBm values for layer in range [0..1].
+* `outAmpValues` - array with size equals to `layersCount`. You should fill it with amplitude values for layer.
+Check JavaDoc of this method for more info.
+
+Your handler also will receive **onResume()**, **onPause()** and **release()** events from audio visualization view.
+
 <br />
-#### Support ####
-* * *
-If you have some issues with visualization (especially on Samsung Galaxy S or HTC devices) make sure you read [this Github issue](https://github.com/felixpalmer/android-visualizer/issues/5#issuecomment-25900391). 
+## Changelog
+
+| Version | Changes                         |
+| --- | --- |
+| v.0.9.1 | Added ability to set custom dBm handler implementations; implemented SpeechRecognizerDbmHandler |
+| v.0.9.0 | First public release            |
+
+#### Migrations from v.0.9.0 to v.0.9.1
+* All library resources and attributes were renamed, prefix `av_` was added. If you're adding Audio Visualization view through XML, make sure you'd properly renamed all attributes. See updated example above. 
+* All library resources were marked as private. If you're pointing to any library resource (color, dimen, etc), Android Studio will warn you.
+* All calculations of dBm values were moved to separate classes. Now you should use **DbmHandler.Factory** class to create new handlers and link it to audio visualization view using **linkTo(DbmHandler)** method. You can provide your implementation of DbmHandler as well.
+* **setInnerOnPreparedListener()** and **setInnerOnCompletionListener()** methods moved to new **VisualizerDbmHandler** class.
+
+<br />
+## Troubleshooting
+If you have some issues with visualization (especially on Samsung Galaxy S or HTC devices) make sure you read [this Github issue](https://github.com/felixpalmer/android-visualizer/issues/5#issuecomment-25900391).
+
+
+<br />
+## Support
 
 If you have any other questions regarding the use of this library, please contact us for support at info@cleveroad.com (email subject: "Android visualization view. Support request.") 
 or 
@@ -146,7 +171,7 @@ Use our contacts:
 * [Google+ account](https://plus.google.com/+CleveroadInc/)
 
 <br />
-#### License ####
+## License
 * * *
     The MIT License (MIT)
     

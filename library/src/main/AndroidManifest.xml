@@ -3,7 +3,7 @@
 
     <application
         android:allowBackup="true"
-        android:label="@string/app_name"
+        android:label="@string/av_app_name"
         android:supportsRtl="true"
         >
 

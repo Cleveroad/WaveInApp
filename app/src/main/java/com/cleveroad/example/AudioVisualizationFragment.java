@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cleveroad.audiovisualization.AudioVisualization;
+import com.cleveroad.audiovisualization.DbmHandler;
 import com.cleveroad.audiovisualization.GLAudioVisualizationView;
 
 /**
@@ -31,17 +32,16 @@ public class AudioVisualizationFragment extends Fragment {
 				.setFooterHeight(R.dimen.footer_height)
 				.setWavesCount(7)
 				.setLayersCount(4)
-				.setBackgroundColorRes(R.color.color_bg)
-				.setLayerColors(R.array.colors)
+				.setBackgroundColorRes(R.color.av_color_bg)
+				.setLayerColors(R.array.av_colors)
 				.build();
-//		return inflater.inflate(R.layout.fragment_gles, container, false);
 	}
 
 	@Override
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		audioVisualization = (AudioVisualization) view;
-		audioVisualization.linkTo(0);
+		audioVisualization.linkTo(DbmHandler.Factory.newVisualizerHandler(0));
 	}
 
 	@Override

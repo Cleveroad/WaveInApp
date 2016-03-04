@@ -41,7 +41,7 @@ class GLWave extends GLShape {
 	 */
 	private static final int SKIP = (int) Math.ceil(ADDITIONAL_POINTS / 2f) * COORDS_PER_VERTEX;
 
-	private FloatBuffer vertexBuffer;
+    private FloatBuffer vertexBuffer;
 	private ShortBuffer shortBuffer;
 	private final Random random;
 	private final float fromX, toX;
@@ -84,19 +84,19 @@ class GLWave extends GLShape {
 		vertices = new float[size];
 
 		// center
-		vertices[0] = Utils.normalize(0f, fromX, toX);
-		vertices[1] = Utils.normalize(-1f, fromY, toY);
+		vertices[0] = Utils.normalizeGl(0f, fromX, toX);
+		vertices[1] = Utils.normalizeGl(-1f, fromY, toY);
 
 		// left bottom footer
-		vertices[3] = Utils.normalize(-1f, fromX, toX);
-		vertices[4] = Utils.normalize(-1f, fromY, toY);
+		vertices[3] = Utils.normalizeGl(-1f, fromX, toX);
+		vertices[4] = Utils.normalizeGl(-1f, fromY, toY);
 
 		// left top footer
 		vertices[6] = vertices[3];
-		vertices[7] = Utils.normalize(0f, fromY, toY);
+		vertices[7] = Utils.normalizeGl(0f, fromY, toY);
 
 		// right top footer
-		vertices[vertices.length - 6] = Utils.normalize(1f, fromX, toX);
+		vertices[vertices.length - 6] = Utils.normalizeGl(1f, fromX, toX);
 		vertices[vertices.length - 5] = vertices[7];
 
 		// right bottom footer
@@ -132,15 +132,19 @@ class GLWave extends GLShape {
 		prevVal = val;
 		int i = 0;
 		double step = 1.0 / POINTS_PER_WAVE;
-		float posX = Utils.normalize(waveX, fromX, toX);
-		float posY = Utils.normalize(val, fromY, toY);
-		for (float time = 0; time < 1 - step / 2; time += step) {
+		float posX = Utils.normalizeGl(waveX, fromX, toX);
+		float posY = Utils.normalizeGl(val, fromY, toY);
+        for (float time = 0; time < 1 - step / 2; time += step) {
 			vertices[COORDS_PER_VERTEX * i + 1 + SKIP] = angle;
 			vertexBuffer.put(COORDS_PER_VERTEX * i + SKIP, Utils.quad(time, vertices[6], posX, vertices[vertices.length - 6]));
 			vertexBuffer.put(COORDS_PER_VERTEX * i + 1 + SKIP, Utils.quad(time, vertices[7], posY, vertices[vertices.length - 5]));
 			i++;
 		}
 	}
+
+    public boolean isCalmedDown() {
+        return Math.abs(prevVal) < 0.001f;
+    }
 
 	/**
 	 * Set wave height coefficient.
@@ -163,5 +167,4 @@ class GLWave extends GLShape {
 		GLES20.glDrawElements(GLES20.GL_TRIANGLE_FAN, shortBuffer.capacity(), GLES20.GL_UNSIGNED_SHORT, shortBuffer);
 		GLES20.glDisableVertexAttribArray(positionHandle);
 	}
-
 }

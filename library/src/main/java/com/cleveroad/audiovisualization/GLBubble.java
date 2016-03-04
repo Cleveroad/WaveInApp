@@ -78,11 +78,11 @@ class GLBubble extends GLShape {
 		float toY = fromY + size;
 		centerY += dt * virtualSpeed;
 		getColor()[3] = (TOP_Y - centerY / TOP_Y);
-		vertexBuffer.put(0, Utils.normalize(0, fromX, toX));
-		vertexBuffer.put(1, Utils.normalize(centerY * ratioY, fromY, toY));
+		vertexBuffer.put(0, Utils.normalizeGl(0, fromX, toX));
+		vertexBuffer.put(1, Utils.normalizeGl(centerY * ratioY, fromY, toY));
 		for (int i=1; i<=POINTS_PER_CIRCLE; i++) {
-			vertexBuffer.put(COORDS_PER_VERTEX * i, Utils.normalize((float) Math.sin(-Math.PI + step * i), fromX, toX));
-			vertexBuffer.put(COORDS_PER_VERTEX * i + 1, Utils.normalize((float) Math.cos(-Math.PI + step * i) * ratioY, fromY, toY));
+			vertexBuffer.put(COORDS_PER_VERTEX * i, Utils.normalizeGl((float) Math.sin(-Math.PI + step * i), fromX, toX));
+			vertexBuffer.put(COORDS_PER_VERTEX * i + 1, Utils.normalizeGl((float) Math.cos(-Math.PI + step * i) * ratioY, fromY, toY));
 		}
 		this.fromY = fromY;
 	}

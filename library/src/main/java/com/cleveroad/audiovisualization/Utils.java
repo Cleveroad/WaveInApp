@@ -2,6 +2,8 @@ package com.cleveroad.audiovisualization;
 
 import android.graphics.Color;
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.Random;
 
@@ -45,11 +47,19 @@ class Utils {
 		};
 	}
 
-	public static float normalize(float val, float newFromVal, float newToVal) {
-		return normalize(val, -1, 1, newFromVal, newToVal);
+    public static float normalize(float val, float from, float to) {
+        if (val < from)
+            return 0;
+        if (val > to)
+            return 1;
+        return val / (to - from);
+    }
+
+	public static float normalizeGl(float val, float newFromVal, float newToVal) {
+		return normalizeGl(val, -1, 1, newFromVal, newToVal);
 	}
 
-	public static float normalize(float val, float fromVal, float toVal, float newFromVal, float newToVal) {
+	public static float normalizeGl(float val, float fromVal, float toVal, float newFromVal, float newToVal) {
 		float perc = (val - fromVal) / (toVal - fromVal);
 		return newFromVal + perc * (newToVal - newFromVal);
 	}
@@ -105,4 +115,31 @@ class Utils {
 		}
 		return true;
 	}
+
+    /**
+     * Get index of object in array.
+     * @param array some array
+     * @param object some object
+     * @return index of object in array or -1
+     */
+    public static <T> int indexOf(@NonNull T[] array, @Nullable T object) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == object)
+                return i;
+        }
+        return -1;
+    }
+
+    /**
+     * Check if all array elements are false
+     * @param array some array
+     * @return true if all elements are equals to false
+     */
+    public static boolean allElementsAreFalse(@NonNull boolean[] array) {
+        for (boolean wavesWorkingState : array) {
+            if (wavesWorkingState)
+                return false;
+        }
+        return true;
+    }
 }

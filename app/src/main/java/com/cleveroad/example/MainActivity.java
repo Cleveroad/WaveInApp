@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
 	private void openFragment() {
 		getSupportFragmentManager().beginTransaction()
-				.add(R.id.container, AudioVisualizationFragment.newInstance())
+				.add(R.id.container, MainFragment.newInstance())
 				.commit();
 	}
 }

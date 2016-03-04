@@ -18,10 +18,10 @@ class GLRectangle extends GLShape {
 	public GLRectangle(float[] color, float fromX, float toX, float fromY, float toY) {
 		super(color);
 		final float[] vertices = {
-				Utils.normalize(-1, fromX, toX), Utils.normalize(1, fromY, toY), 0,
-				Utils.normalize(-1, fromX, toX), Utils.normalize(-1, fromY, toY), 0,
-				Utils.normalize(1, fromX, toX), Utils.normalize(-1, fromY, toY), 0,
-				Utils.normalize(1, fromX, toX), Utils.normalize(1, fromY, toY), 0
+				Utils.normalizeGl(-1, fromX, toX), Utils.normalizeGl(1, fromY, toY), 0,
+				Utils.normalizeGl(-1, fromX, toX), Utils.normalizeGl(-1, fromY, toY), 0,
+				Utils.normalizeGl(1, fromX, toX), Utils.normalizeGl(-1, fromY, toY), 0,
+				Utils.normalizeGl(1, fromX, toX), Utils.normalizeGl(1, fromY, toY), 0
 		};
 		ByteBuffer vertexByteBuffer = ByteBuffer.allocateDirect(vertices.length * SIZE_OF_FLOAT);
 		vertexByteBuffer.order(ByteOrder.nativeOrder());
