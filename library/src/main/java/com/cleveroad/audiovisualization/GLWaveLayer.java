@@ -25,6 +25,7 @@ class GLWaveLayer {
 	private final Set<GLBubble> usedBubbles;
 	private final Queue<GLBubble> unusedBubbles;
 	private final Set<GLBubble> producedBubbles;
+    private boolean isCalmedDown;
 
 
 	public GLWaveLayer(GLAudioVisualizationView.Configuration configuration, float[] color, float fromY, float toY, Random random) {
@@ -48,7 +49,7 @@ class GLWaveLayer {
 		Collections.addAll(unusedBubbles, bubbles);
 	}
 
-	/**
+    /**
 	 * Generate random points for wave.
 	 * @param random instance of Random
 	 * @param wavesCount number of waves
@@ -82,8 +83,10 @@ class GLWaveLayer {
 	 */
 	public void update(long dt, float dAngle, float ratioY) {
 		float d = dt * dAngle;
+        isCalmedDown = true;
 		for (GLWave wave : waves) {
 			wave.update(d);
+            isCalmedDown &= wave.isCalmedDown();
 		}
 		usedBubbles.addAll(producedBubbles);
 		producedBubbles.clear();
@@ -98,7 +101,11 @@ class GLWaveLayer {
 		}
 	}
 
-	/**
+    public boolean isCalmedDown() {
+        return isCalmedDown;
+    }
+
+    /**
 	 * Draw whole wave layer.
 	 */
 	public void draw() {

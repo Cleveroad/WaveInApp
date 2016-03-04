@@ -2,6 +2,8 @@ package com.cleveroad.audiovisualization;
 
 import android.graphics.Color;
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import java.util.Random;
 
@@ -105,4 +107,31 @@ class Utils {
 		}
 		return true;
 	}
+
+    /**
+     * Get index of object in array.
+     * @param array some array
+     * @param object some object
+     * @return index of object in array or -1
+     */
+    public static <T> int indexOf(@NonNull T[] array, @Nullable T object) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == object)
+                return i;
+        }
+        return -1;
+    }
+
+    /**
+     * Check if all array elements are false
+     * @param array some array
+     * @return true if all elements are equals to false
+     */
+    public static boolean allElementsAreFalse(@NonNull boolean[] array) {
+        for (boolean wavesWorkingState : array) {
+            if (wavesWorkingState)
+                return false;
+        }
+        return true;
+    }
 }

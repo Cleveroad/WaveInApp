@@ -7,4 +7,6 @@
     <string name="btn_cancel">Cancel</string>
     <string name="toast_permissions_not_granted">Permissions not granted.</string>
     <string name="message_permissions"><![CDATA[To allow audio visualization view to process audio stream app needs an access to your <b>Microphone</b>.]]></string>
+    <string name="start_recognition">Start Recognition</string>
+    <string name="stop_recognition">Stop Recognition</string>
 </resources>

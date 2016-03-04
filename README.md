@@ -8,7 +8,7 @@ To include this library to your project add dependency in **build.gradle** file:
 
 ```groovy
     dependencies {
-        compile 'com.cleveroad:audiovisualization:0.9.0'
+        compile 'com.cleveroad:audiovisualization:0.9.1'
     }
 ```
 
@@ -47,13 +47,13 @@ Via XML:
         android:id="@+id/visualizer_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:bubble_size="@dimen/bubble_size"
-        app:randomize_bubble_size="true"
-        app:wave_height="@dimen/wave_height"
-        app:footer_height="@dimen/footer_height"
-        app:waves_count="7"
-        app:layers_count="4"
-        app:background_color="@color/color_bg"
+        app:av_bubble_size="@dimen/bubble_size"
+        app:av_randomize_bubble_size="true"
+        app:av_wave_height="@dimen/wave_height"
+        app:av_footer_height="@dimen/footer_height"
+        app:av_waves_count="7"
+        app:av_layers_count="4"
+        app:av_background_color="@color/color_bg"
         />
 ```
 
@@ -90,11 +90,10 @@ Via Java code:
         audioVisualization = (AudioVisualization) glAudioVisualizationView;
     }
 
-...
-
+    ...
 ```
 
-To connect audio visualization view to audio output you can use **linkTo(int)** or **linkTo(MediaPlayer)** methods.
+To connect audio visualization view to audio output you can use **linkTo(int)**, **linkTo(MediaPlayer)** or **linkTo(DbmHandler)** methods.
 
 ```JAVA
     // connecting to device's output mix
@@ -102,6 +101,10 @@ To connect audio visualization view to audio output you can use **linkTo(int)** 
     ...
     MediaPlayer mp = MediaPlayer.create(...);
     audioVisualization.linkTo(mp);
+    ...
+    SpeechRecognizerDbmHandler handler = new SpeechRecognizerDbmHandler(context);
+    handler.innerRecognitionListener(...);
+    audioVisualization.linkTo(handler);
 ```
 
 You must always call **onPause** method to pause visualization and stop wasting CPU resources for computations in vain. As soon as your view appears in sight of user, call **onResume**. 
@@ -129,6 +132,18 @@ When user leaves screen with audio visualization view, don't forget to free reso
         super.onDestroyView();
     }
 ```
+
+<br />
+## Changelog
+
+| Version | Changes                         |
+| --- | --- |
+| v.0.9.1 | Added ability to set custom dBm handler implementations; implemented SpeechRecognizerDbmHandler |
+| v.0.9.0 | First public release            |
+
+#### Migrations from v.0.9.0 to v.0.9.1
+* All library resources and attributes were renamed, prefix `av_` was added. If you're adding Audio Visualization view through XML, make sure you'd properly renamed all attributes. See updated example above. 
+* All library resources were marked as private. If you're pointing to any library resource (color, dimen, etc), Android Studio will warn you.
 
 <br />
 #### Support ####
