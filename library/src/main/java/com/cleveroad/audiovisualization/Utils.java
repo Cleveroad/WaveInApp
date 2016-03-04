@@ -47,11 +47,19 @@ class Utils {
 		};
 	}
 
-	public static float normalize(float val, float newFromVal, float newToVal) {
-		return normalize(val, -1, 1, newFromVal, newToVal);
+    public static float normalize(float val, float from, float to) {
+        if (val < from)
+            return 0;
+        if (val > to)
+            return 1;
+        return val / (to - from);
+    }
+
+	public static float normalizeGl(float val, float newFromVal, float newToVal) {
+		return normalizeGl(val, -1, 1, newFromVal, newToVal);
 	}
 
-	public static float normalize(float val, float fromVal, float toVal, float newFromVal, float newToVal) {
+	public static float normalizeGl(float val, float fromVal, float toVal, float newFromVal, float newToVal) {
 		float perc = (val - fromVal) / (toVal - fromVal);
 		return newFromVal + perc * (newToVal - newFromVal);
 	}

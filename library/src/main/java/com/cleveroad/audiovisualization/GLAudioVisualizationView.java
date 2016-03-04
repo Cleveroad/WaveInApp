@@ -12,7 +12,6 @@ import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 
 /**
  * Audio visualization view implementation for OpenGL.
@@ -71,6 +70,9 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
 
     @Override
     public <T> void linkTo(@NonNull DbmHandler<T> dbmHandler) {
+        if (this.dbmHandler != null) {
+            this.dbmHandler.release();
+        }
         this.dbmHandler = dbmHandler;
         this.dbmHandler.setUp(this, configuration.layersCount);
     }
@@ -79,6 +81,7 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
 	public void release() {
 		if (dbmHandler != null) {
 			dbmHandler.release();
+            dbmHandler = null;
 		}
 	}
 
@@ -86,7 +89,6 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
     public void startRendering() {
         if (getRenderMode() != RENDERMODE_CONTINUOUSLY) {
             setRenderMode(RENDERMODE_CONTINUOUSLY);
-            Log.d("TEST", "startRendering");
         }
     }
 
@@ -94,7 +96,6 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
     public void stopRendering() {
         if (getRenderMode() != RENDERMODE_WHEN_DIRTY) {
             setRenderMode(RENDERMODE_WHEN_DIRTY);
-            Log.d("TEST", "stopRendering");
         }
     }
 

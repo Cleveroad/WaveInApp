@@ -15,17 +15,19 @@ import android.support.annotation.Nullable;
  */
 public class SpeechRecognizerDbmHandler extends DbmHandler<Float> implements RecognitionListener {
 
-    private static final float MAX_RMSDB_VALUE = 10.0f;
+    private static final float MIN_RMS_DB_VALUE = -2.12f;
+    private static final float MAX_RMS_DB_VALUE = 10.0f;
     private final SpeechRecognizer speechRecognizer;
+    private final float minRmsDbValue;
     private final float maxRmsDbValue;
     private RecognitionListener innerRecognitionListener;
 
     /**
-     * Create new instance of DbmHandler. Default value for {@code maxRmsDbValue} is 10.0f.
+     * Create new instance of DbmHandler with default RMS dB values.
      * @param context instance of context.
      */
     SpeechRecognizerDbmHandler(@NonNull Context context) {
-        this(context, MAX_RMSDB_VALUE);
+        this(context, MIN_RMS_DB_VALUE, MAX_RMS_DB_VALUE);
     }
 
     /**
@@ -33,9 +35,10 @@ public class SpeechRecognizerDbmHandler extends DbmHandler<Float> implements Rec
      * @param context instance of context
      * @param maxRmsDbValue maximum RMS dB value
      */
-    SpeechRecognizerDbmHandler(@NonNull Context context, float maxRmsDbValue) {
+    SpeechRecognizerDbmHandler(@NonNull Context context, float minRmsDbValue, float maxRmsDbValue) {
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
         speechRecognizer.setRecognitionListener(this);
+        this.minRmsDbValue = minRmsDbValue;
         this.maxRmsDbValue = maxRmsDbValue;
     }
 
@@ -76,7 +79,7 @@ public class SpeechRecognizerDbmHandler extends DbmHandler<Float> implements Rec
     @Override
     protected void onDataReceivedImpl(Float rmsdB, int layersCount, float[] dBmArray, float[] ampsArray) {
         for (int i = 0; i < layersCount; i++) {
-            dBmArray[i] = rmsdB < 0 ? 0 : rmsdB / maxRmsDbValue;
+            dBmArray[i] = Utils.normalize(rmsdB, minRmsDbValue, maxRmsDbValue);
             ampsArray[i] = 1;
         }
     }
@@ -96,7 +99,6 @@ public class SpeechRecognizerDbmHandler extends DbmHandler<Float> implements Rec
 
     @Override
     public void onBeginningOfSpeech() {
-        startRendering();
         if (innerRecognitionListener != null) {
             innerRecognitionListener.onBeginningOfSpeech();
         }
@@ -119,8 +121,6 @@ public class SpeechRecognizerDbmHandler extends DbmHandler<Float> implements Rec
 
     @Override
     public void onEndOfSpeech() {
-        onDataReceived(0f);
-        calmDownAndStopRendering();
         if (innerRecognitionListener != null) {
             innerRecognitionListener.onEndOfSpeech();
         }
@@ -128,8 +128,6 @@ public class SpeechRecognizerDbmHandler extends DbmHandler<Float> implements Rec
 
     @Override
     public void onError(int error) {
-        onDataReceived(0f);
-        calmDownAndStopRendering();
         if (innerRecognitionListener != null) {
             innerRecognitionListener.onError(error);
         }
@@ -137,6 +135,9 @@ public class SpeechRecognizerDbmHandler extends DbmHandler<Float> implements Rec
 
     @Override
     public void onResults(Bundle results) {
+        speechRecognizer.cancel();
+        onDataReceived(minRmsDbValue);
+        calmDownAndStopRendering();
         if (innerRecognitionListener != null) {
             innerRecognitionListener.onResults(results);
         }

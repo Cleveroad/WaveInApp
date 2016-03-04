@@ -49,12 +49,13 @@ public class SpeechRecognitionFragment extends Fragment {
                 } else {
                     Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
                     intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+                    intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE, getContext().getPackageName());
                     handler.startListening(intent);
                 }
                 btnRecognize.setEnabled(false);
             }
         });
-        handler = DbmHandler.newSpeechRecognizerHandler(getContext());
+        handler = DbmHandler.Factory.newSpeechRecognizerHandler(getContext());
         handler.innerRecognitionListener(new SimpleRecognitionListener() {
 
             @Override
@@ -101,47 +102,38 @@ public class SpeechRecognitionFragment extends Fragment {
 
         @Override
         public void onReadyForSpeech(Bundle params) {
-
         }
 
         @Override
         public void onBeginningOfSpeech() {
-
         }
 
         @Override
         public void onRmsChanged(float rmsdB) {
-
         }
 
         @Override
         public void onBufferReceived(byte[] buffer) {
-
         }
 
         @Override
         public void onEndOfSpeech() {
-
         }
 
         @Override
         public void onError(int error) {
-
         }
 
         @Override
         public void onResults(Bundle results) {
-
         }
 
         @Override
         public void onPartialResults(Bundle partialResults) {
-
         }
 
         @Override
         public void onEvent(int eventType, Bundle params) {
-
         }
     }
 }
