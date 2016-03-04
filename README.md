@@ -136,6 +136,8 @@ To implement you own data conversion handler, just extend your class from DbmHan
 * `outAmpValues` - array with size equals to `layersCount`. You should fill it with amplitude values for layer.
 Check JavaDoc of this method for more info.
 
+Then call **onDataReceived(T object)** method to visualize your data.
+
 Your handler also will receive **onResume()**, **onPause()** and **release()** events from audio visualization view.
 
 <br />
