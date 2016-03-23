@@ -12,7 +12,7 @@ import com.cleveroad.audiovisualization.DbmHandler;
 import com.cleveroad.audiovisualization.GLAudioVisualizationView;
 
 /**
- * Fragment with audio visualization view.
+ * Fragment with visualization of audio output.
  */
 public class AudioVisualizationFragment extends Fragment {
 

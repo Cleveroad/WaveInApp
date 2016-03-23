@@ -16,7 +16,7 @@ import com.cleveroad.audiovisualization.DbmHandler;
 import com.cleveroad.audiovisualization.SpeechRecognizerDbmHandler;
 
 /**
- * Fragment with audio visualization view.
+ * Fragment with visualization of speech recognition.
  */
 public class SpeechRecognitionFragment extends Fragment {
 

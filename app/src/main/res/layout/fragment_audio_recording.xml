@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <com.cleveroad.audiovisualization.GLAudioVisualizationView
+        android:id="@+id/visualizer_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:av_bubble_size="@dimen/bubble_size"
+        app:av_randomize_bubble_size="true"
+        app:av_wave_height="@dimen/wave_height"
+        app:av_footer_height="@dimen/footer_height"
+        app:av_waves_count="7"
+        app:av_layers_count="4"
+        app:av_background_color="@color/av_color_bg"
+        />
+
+    <Button
+        android:id="@+id/btn_record"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:text="@string/start_recording"
+        android:layout_alignParentBottom="true"
+        />
+</RelativeLayout>

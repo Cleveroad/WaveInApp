@@ -3,5 +3,6 @@
     <string-array name="selection_items">
         <item>Visualizer</item>
         <item>Speech Recognizer</item>
+        <item>Audio Recording</item>
     </string-array>
 </resources>

@@ -35,6 +35,11 @@ public class MainFragment extends ListFragment implements AdapterView.OnItemClic
                     .replace(R.id.container, SpeechRecognitionFragment.newInstance())
                     .addToBackStack(null)
                     .commit();
+        } else if (position == 2) {
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, AudioRecordingFragment.newInstance())
+                    .addToBackStack(null)
+                    .commit();
         }
     }
 }
