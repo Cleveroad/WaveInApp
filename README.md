@@ -1,8 +1,18 @@
-# Audio Visualization View #
+# Audio Visualization View [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome) <img src="https://www.cleveroad.com/public/comercial/label-android.svg" height="20"> <a href="https://www.cleveroad.com/?utm_source=github&utm_medium=label&utm_campaign=contacts"><img src="https://www.cleveroad.com/public/comercial/label-cleveroad.svg" height="20"></a>
+![Demo-small image](/images/demo-small.gif)![Demo-small image](/images/demo-small.gif)![Demo-small image](/images/demo-small.gif)
 
-Implementation of [music player concept](https://dribbble.com/shots/2369760-Player-Concept). Welcome Live Equalizer with wave effect. As animation shows, when music plays the waves are active, and once it is paused or stopped – waves calm down.
+## Welcome to Audio Visualization View with wave effect.
 
-![Demo image](/images/demo.gif)
+Our library can take audio from any source (audio players, streams, voice input) and animate it with high frame rate. Cool animation, designed specially for the library, responds to sound vibrations. The animation becomes intense when music plays, and once it is paused or stopped – waves calm down.
+
+The library is a part of implementation of <a href="https://dribbble.com/shots/2369760-Player-Concept">music player</a>. 
+
+![Demo image](/images/player-big.gif)
+
+Great visualization can spruce up any app, especially audio player. We suggest you smart and good-looking Audio Visualization View for your Android app. You can read about all the advantages this library has and find out how to implement it into your app in our blog post:
+
+[![Article](/images/article.png)](https://www.cleveroad.com/blog/case-study-audio-visualization-view-for-android-by-cleveroad)
+
 
 ## Setup and usage
 
@@ -163,14 +173,6 @@ If you have some issues with visualization (especially on Samsung Galaxy S or HT
 ## Support
 
 If you have any other questions regarding the use of this library, please contact us for support at info@cleveroad.com (email subject: "Android visualization view. Support request.") 
-or 
-
-Use our contacts: 
-
-* [Official site](https://www.cleveroad.com/?utm_source=github&utm_medium=link&utm_campaign=contacts)
-* [Facebook account](https://www.facebook.com/cleveroadinc)
-* [Twitter account](https://twitter.com/CleveroadInc)
-* [Google+ account](https://plus.google.com/+CleveroadInc/)
 
 <br />
 ## License
