@@ -1,7 +1,9 @@
 package com.cleveroad.audiovisualization;
 
 import android.media.audiofx.Visualizer;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 /**
  * Wrapper for visualizer.
@@ -12,6 +14,7 @@ class VisualizerWrapper {
 
 	public VisualizerWrapper(int audioSessionId, @NonNull final OnFftDataCaptureListener onFftDataCaptureListener) {
 		visualizer = new Visualizer(audioSessionId);
+        visualizer.setEnabled(false);
 		visualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
 		visualizer.setDataCaptureListener(new Visualizer.OnDataCaptureListener() {
 			@Override
@@ -31,8 +34,16 @@ class VisualizerWrapper {
 		visualizer = null;
 	}
 
-	public void setEnabled(boolean enabled) {
-		visualizer.setEnabled(enabled);
+	public void setEnabled(final boolean enabled) {
+        if (visualizer.getEnabled() != enabled) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    int res = visualizer.setEnabled(enabled);
+                    Log.d("TEST", "result: " + res);
+                }
+            }, 500);
+        }
 	}
 
 	public interface OnFftDataCaptureListener {

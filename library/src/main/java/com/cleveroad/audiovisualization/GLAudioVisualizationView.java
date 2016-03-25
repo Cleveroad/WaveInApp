@@ -12,6 +12,7 @@ import android.support.annotation.DimenRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 
 /**
  * Audio visualization view implementation for OpenGL.
@@ -352,4 +353,66 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
 			return new GLAudioVisualizationView(this);
 		}
 	}
+
+    public static class RendererBuilder {
+
+        private final Builder builder;
+        private GLSurfaceView glSurfaceView;
+        private DbmHandler handler;
+
+        public RendererBuilder(@NonNull Builder builder) {
+            this.builder = builder;
+        }
+
+        public RendererBuilder handler(DbmHandler handler) {
+            this.handler = handler;
+            return this;
+        }
+
+        public RendererBuilder glSurfaceView(@NonNull GLSurfaceView glSurfaceView) {
+            this.glSurfaceView = glSurfaceView;
+            return this;
+        }
+
+        public GLSurfaceView.Renderer build() {
+            final GLRenderer renderer = new GLRenderer(builder.context, new Configuration(builder));
+            final InnerAudioVisualization audioVisualization = new InnerAudioVisualization() {
+                @Override
+                public void startRendering() {
+                    if (glSurfaceView.getRenderMode() != RENDERMODE_CONTINUOUSLY) {
+                        glSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                        Log.d("TEST", "startRendering");
+                    }
+                }
+
+                @Override
+                public void stopRendering() {
+                    if (glSurfaceView.getRenderMode() != RENDERMODE_WHEN_DIRTY) {
+                        glSurfaceView.setRenderMode(RENDERMODE_WHEN_DIRTY);
+                        Log.d("TEST", "stopRendering");
+                    }
+                }
+
+                @Override
+                public void calmDownListener(@Nullable CalmDownListener calmDownListener) {
+
+                }
+
+                @Override
+                public void onDataReceived(float[] dBmArray, float[] ampsArray) {
+                    Log.d("TEST", "onDataReceived");
+                    renderer.onDataReceived(dBmArray, ampsArray);
+                }
+            };
+            renderer.calmDownListener(new CalmDownListener() {
+                @Override
+                public void onCalmedDown() {
+                    Log.d("TEST", "calmDown");
+                    audioVisualization.stopRendering();
+                }
+            });
+            handler.setUp(audioVisualization, builder.layersCount);
+            return renderer;
+        }
+    }
 }

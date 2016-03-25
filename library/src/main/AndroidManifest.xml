@@ -1,12 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.cleveroad.audiovisualization">
 
-    <application
-        android:allowBackup="true"
-        android:label="@string/av_app_name"
-        android:supportsRtl="true"
-        >
-
-    </application>
 
 </manifest>

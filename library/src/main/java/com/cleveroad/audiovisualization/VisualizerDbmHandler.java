@@ -80,6 +80,12 @@ public class VisualizerDbmHandler extends DbmHandler<byte[]> implements Visualiz
     }
 
     @Override
+    public void release() {
+        super.release();
+        visualizerWrapper.release();
+    }
+
+    @Override
     public void onCompletion(MediaPlayer mp) {
         calmDownAndStopRendering();
         visualizerWrapper.setEnabled(false);
