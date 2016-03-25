@@ -12,6 +12,7 @@ class VisualizerWrapper {
 
 	public VisualizerWrapper(int audioSessionId, @NonNull final OnFftDataCaptureListener onFftDataCaptureListener) {
 		visualizer = new Visualizer(audioSessionId);
+        visualizer.setEnabled(false);
 		visualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
 		visualizer.setDataCaptureListener(new Visualizer.OnDataCaptureListener() {
 			@Override
@@ -24,6 +25,7 @@ class VisualizerWrapper {
 				onFftDataCaptureListener.onFftDataCapture(fft);
 			}
 		}, Visualizer.getMaxCaptureRate(), false, true);
+        visualizer.setEnabled(true);
 	}
 
 	public void release() {

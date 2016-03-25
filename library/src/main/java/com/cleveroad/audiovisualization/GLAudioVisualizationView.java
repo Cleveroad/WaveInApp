@@ -347,6 +347,14 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
 			}
 			return this;
 		}
+        
+        public Builder setLayerColors(int[] colors) {
+			layerColors = new float[colors.length][];
+			for (int i = 0; i < colors.length; i++) {
+				layerColors[i] = Utils.convertColor(colors[i]);
+			}
+			return this;
+		}
 
 		public GLAudioVisualizationView build() {
 			return new GLAudioVisualizationView(this);
