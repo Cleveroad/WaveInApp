@@ -1,19 +1,23 @@
 # Audio Visualization View [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome) <img src="https://www.cleveroad.com/public/comercial/label-android.svg" height="20"> <a href="https://www.cleveroad.com/?utm_source=github&utm_medium=label&utm_campaign=contacts"><img src="https://www.cleveroad.com/public/comercial/label-cleveroad.svg" height="20"></a>
-![Demo-small image](/images/demo-small.gif)
+![Header image](/images/header.jpg)
 
 ## Welcome to Audio Visualization View with wave effect.
 
 Our library can take audio from any source (audio players, streams, voice input) and animate it with high frame rate. Cool animation, designed specially for the library, responds to sound vibrations. The animation becomes intense when music plays, and once it is paused or stopped – waves calm down.
 
-The library is a part of implementation of <a href="https://dribbble.com/shots/2369760-Player-Concept">music player</a>. 
+The library is a part of implementation of <a href="https://dribbble.com/shots/2369760-Player-Concept">music player</a>.
+<br/>
 
-![Demo image](/images/player-big.gif)
-
-Great visualization can spruce up any app, especially audio player. We suggest you smart and good-looking Audio Visualization View for your Android app. You can read about all the advantages this library has and find out how to implement it into your app in our blog post:
-
-[![Article](/images/article.png)](https://www.cleveroad.com/blog/case-study-audio-visualization-view-for-android-by-cleveroad)
+![Demo image](/images/demo_.gif)
 
 
+Great visualization can spruce up any app, especially audio player. We suggest you smart and good-looking Audio Visualization View for your Android app. You can read about all the advantages this library has and find out how to implement it into your app in our blog post: <b><a href="https://www.cleveroad.com/blog/case-study-audio-visualization-view-for-android-by-cleveroad">Case Study: Audio Visualization View For Android by Cleveroad</a></b>
+<br/><br/>
+
+[![Article image](/images/article.jpg)](https://www.cleveroad.com/blog/case-study-audio-visualization-view-for-android-by-cleveroad)
+<br/><br/>
+[![Awesome](/images/logo-footer.png)](https://www.cleveroad.com/?utm_source=github&utm_medium=label&utm_campaign=contacts)
+<br/>
 ## Setup and usage
 
 To include this library to your project add dependency in **build.gradle** file:
