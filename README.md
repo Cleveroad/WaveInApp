@@ -7,7 +7,7 @@ Our library can take audio from any source (audio players, streams, voice input)
 
 The library is a part of implementation of <a href="https://dribbble.com/shots/2369760-Player-Concept">music player</a>.
 
-![Shadow image](/images/shadow-down.png)![Demo image](/images/demo.gif)
+![Demo image](/images/demo.gif)![Demo image](/images/demo.gif)
 
 
 Great visualization can spruce up any app, especially audio player. We suggest you smart and good-looking Audio Visualization View for your Android app. You can read about all the advantages this library has and find out how to implement it into your app in our blog post:
