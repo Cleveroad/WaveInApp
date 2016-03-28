@@ -7,7 +7,7 @@ Our library can take audio from any source (audio players, streams, voice input)
 
 The library is a part of implementation of <a href="https://dribbble.com/shots/2369760-Player-Concept">music player</a>.
 
-
+![Shadow image](/images/shadow-up.png)
 ![Demo image](/images/demo.gif)
 
 
