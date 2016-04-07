@@ -97,8 +97,8 @@ public class AudioRecordingFragment extends Fragment {
                 if (i == 0 || i == dataSize - 1) {
                     k = 2;
                 }
-                float re = (float) fft[i].re();
-                float im = (float) fft[i + 1].im();
+                float re = (float) fft[2 * i].re();
+                float im = (float) fft[2 * i + 1].im();
                 float sqMag = re * re + im * im;
                 allAmps[i] = (float) (k * Math.sqrt(sqMag) / dataSize);
             }

@@ -139,25 +139,27 @@ public abstract class DbmHandler<TData> {
 
         /**
          * Create new visualizer dBm handler.
+         * @param context instance of context
          * @param audioSessionId audio session id
          * @return new visualizer dBm handler
          * @see Visualizer
          */
-        public static VisualizerDbmHandler newVisualizerHandler(int audioSessionId) {
-            return new VisualizerDbmHandler(audioSessionId);
+        public static VisualizerDbmHandler newVisualizerHandler(@NonNull Context context, int audioSessionId) {
+            return new VisualizerDbmHandler(context, audioSessionId);
         }
 
         /**
          * Create new visualizer dBm handler and wire with media player. At this point handler will set itself as
          * {@link MediaPlayer.OnPreparedListener} and {@link MediaPlayer.OnCompletionListener} of media player.
+         * @param context instance of context
          * @param mediaPlayer instance of media player
          * @return new visualizer dBm handler
          * @see Visualizer,
          * @see VisualizerDbmHandler#setInnerOnPreparedListener(MediaPlayer.OnPreparedListener)
          * @see VisualizerDbmHandler#setInnerOnCompletionListener(MediaPlayer.OnCompletionListener)
          */
-        public static VisualizerDbmHandler newVisualizerHandler(@NonNull MediaPlayer mediaPlayer) {
-            return new VisualizerDbmHandler(mediaPlayer);
+        public static VisualizerDbmHandler newVisualizerHandler(@NonNull Context context, @NonNull MediaPlayer mediaPlayer) {
+            return new VisualizerDbmHandler(context, mediaPlayer);
         }
 
         /**

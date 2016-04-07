@@ -10,7 +10,7 @@ To include this library to your project add dependency in **build.gradle** file:
 
 ```groovy
     dependencies {
-        compile 'com.cleveroad:audiovisualization:0.9.1'
+        compile 'com.cleveroad:audiovisualization:0.9.2'
     }
 ```
 
@@ -95,9 +95,14 @@ Via Java code:
 To connect audio visualization view to audio output you can use **linkTo(DbmHandler)** method. See **DbmHandler.Factory** class for the list of available handler implementations.
 
 ```JAVA
-    SpeechRecognizerDbmHandler handler = DbmHandler.Factory.newSpeechRecognizerHandler(context);
-    handler.innerRecognitionListener(...);
-    audioVisualization.linkTo(handler);
+    // set speech recognizer handler
+    SpeechRecognizerDbmHandler speechRecHandler = DbmHandler.Factory.newSpeechRecognizerHandler(context);
+    speechRecHandler.innerRecognitionListener(...);
+    audioVisualization.linkTo(speechRecHandler);
+    
+    // set audio visualization handler. This will REPLACE previously set speech recognizer handler
+    VisualizerDbmHandler vizualizerHandler = DbmHandler.Factory.newVisualizerHandler(getContext(), 0);
+    audioVisualization.linkTo(vizualizerHandler);
 ```
 
 You must always call **onPause** method to pause visualization and stop wasting CPU resources for computations in vain. As soon as your view appears in sight of user, call **onResume**. 
@@ -143,8 +148,12 @@ Your handler also will receive **onResume()**, **onPause()** and **release()** e
 
 | Version | Changes                         |
 | --- | --- |
+| v.0.9.2 | Added voice recording example. Added ability to build audio visualization renderer. |
 | v.0.9.1 | Added ability to set custom dBm handler implementations; implemented SpeechRecognizerDbmHandler |
 | v.0.9.0 | First public release            |
+
+#### Migrations from v.0.9.1 to v.0.9.2
+* **DbmHandler.Factory.newVisualizerHandler(int)** method signature changed to **DbmHandler.Factory.newVisualizerHandler(Context, int)**.
 
 #### Migrations from v.0.9.0 to v.0.9.1
 * All library resources and attributes were renamed, prefix `av_` was added. If you're adding Audio Visualization view through XML, make sure you'd properly renamed all attributes. See updated example above. 

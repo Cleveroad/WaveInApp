@@ -2,7 +2,6 @@ package com.cleveroad.audiovisualization;
 
 import android.content.Context;
 import android.opengl.GLES20;
-import android.opengl.GLSurfaceView;
 import android.support.annotation.NonNull;
 
 import java.util.Random;
@@ -13,7 +12,7 @@ import javax.microedition.khronos.opengles.GL10;
 /**
  * OpenGL renderer implementation.
  */
-class GLRenderer implements GLSurfaceView.Renderer {
+class GLRenderer implements GLAudioVisualizationView.AudioVisualizationRenderer {
 
 	private static final long ANIMATION_TIME = 400;
 	private static final float D_ANGLE = (float) (2 * Math.PI / ANIMATION_TIME);
@@ -25,6 +24,7 @@ class GLRenderer implements GLSurfaceView.Renderer {
 	private final Random random;
 	private float ratioY = 1;
     private InnerAudioVisualization.CalmDownListener calmDownListener;
+    boolean bgUpdated;
 
 	public GLRenderer(@NonNull Context context, GLAudioVisualizationView.Configuration configuration) {
 		this.configuration = configuration;
@@ -49,7 +49,7 @@ class GLRenderer implements GLSurfaceView.Renderer {
 			int reverseI = layers.length - i - 1;
 			float fromY = -1 + reverseI * waveHeightPerc * 2;
 			float toY = fromY + layerHeightPerc * 2;
-			layers[i] = new GLWaveLayer(configuration, configuration.layerColors[reverseI], fromY, toY, random);
+			layers[i] = new GLWaveLayer(configuration, configuration.layerColors[i], fromY, toY, random);
 		}
 	}
 
@@ -61,7 +61,13 @@ class GLRenderer implements GLSurfaceView.Renderer {
 
 	@Override
 	public void onDrawFrame(GL10 gl) {
-		GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+        if (bgUpdated) {
+            float[] backgroundColor = configuration.backgroundColor;
+            GLES20.glClearColor(backgroundColor[0], backgroundColor[1], backgroundColor[2], backgroundColor[3]);
+            bgUpdated = false;
+        } else {
+            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+        }
 		long endTime = System.currentTimeMillis();
 		long dt = endTime - startTime;
 		startTime = endTime;
@@ -105,4 +111,23 @@ class GLRenderer implements GLSurfaceView.Renderer {
 		GLES20.glCompileShader(shader);
 		return shader;
 	}
+
+    @Override
+    public void updateConfiguration(@NonNull GLAudioVisualizationView.ColorsBuilder builder) {
+        float[] bgColor = configuration.backgroundColor;
+        float[] backgroundColor = builder.backgroundColor();
+        bgUpdated = false;
+        for (int i = 0; i < 4; i++) {
+            bgUpdated |= Float.compare(bgColor[i], backgroundColor[i]) != 0;
+        }
+        if (bgUpdated) {
+            configuration.backgroundColor = builder.backgroundColor();
+        }
+        if (layers == null)
+            return;
+        float[][] colors = builder.layerColors();
+        for (int i = 0; i < layers.length; i++) {
+            layers[i].setColor(colors[i]);
+        }
+    }
 }
