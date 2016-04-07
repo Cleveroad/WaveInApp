@@ -18,7 +18,7 @@ class VisualizerWrapper {
     private long lastZeroArrayTimestamp;
 
 	public VisualizerWrapper(@NonNull Context context, int audioSessionId, @NonNull final OnFftDataCaptureListener onFftDataCaptureListener) {
-        mediaPlayer = MediaPlayer.create(context, R.raw.workaround_1min);
+        mediaPlayer = MediaPlayer.create(context, R.raw.av_workaround_1min);
 		visualizer = new Visualizer(audioSessionId);
         visualizer.setEnabled(false);
 		visualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
