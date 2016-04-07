@@ -184,14 +184,14 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
 			waveHeight = Utils.between(waveHeight, Constants.MIN_WAVE_HEIGHT, Constants.MAX_WAVE_HEIGHT);
 			this.wavesCount = builder.wavesCount;
 			wavesCount = Utils.between(wavesCount, Constants.MIN_WAVES_COUNT, Constants.MAX_WAVES_COUNT);
-			this.layerColors = builder.layerColors;
+			this.layerColors = builder.layerColors();
 			this.bubbleSize = builder.bubbleSize;
 			bubbleSize = Utils.between(bubbleSize, Constants.MIN_BUBBLE_SIZE, Constants.MAX_BUBBLE_SIZE);
 			this.bubbleSize = this.bubbleSize / builder.context.getResources().getDisplayMetrics().widthPixels;
 			this.footerHeight = builder.footerHeight;
 			footerHeight = Utils.between(footerHeight, Constants.MIN_FOOTER_HEIGHT, Constants.MAX_FOOTER_HEIGHT);
 			this.randomizeBubbleSize = builder.randomizeBubbleSize;
-			this.backgroundColor = builder.backgroundColor;
+			this.backgroundColor = builder.backgroundColor();
 			this.layersCount = builder.layersCount;
 			layersCount = Utils.between(layersCount, Constants.MIN_LAYERS_COUNT, Constants.MAX_LAYERS_COUNT);
 			if (layerColors.length < layersCount) {
@@ -200,7 +200,84 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
 		}
 	}
 
-    public static class Builder {
+    public static class ColorsBuilder<T extends ColorsBuilder> {
+        private float[] backgroundColor;
+        private float[][] layerColors;
+        private final Context context;
+
+        public ColorsBuilder(@NonNull Context context) {
+            this.context = context;
+        }
+
+        float[][] layerColors() {
+            return layerColors;
+        }
+
+        float[] backgroundColor() {
+            return backgroundColor;
+        }
+
+        /**
+         * Set background color
+         *
+         * @param backgroundColor background color
+         */
+        public T setBackgroundColor(@ColorInt int backgroundColor) {
+            this.backgroundColor = Utils.convertColor(backgroundColor);
+            return getThis();
+        }
+
+        /**
+         * Set layer colors from array resource
+         *
+         * @param arrayId array resource
+         */
+        public T setLayerColors(@ArrayRes int arrayId) {
+            String[] colorsArray = context.getResources().getStringArray(arrayId);
+            int[] colors;
+            if (!Utils.allElementsAreNull(colorsArray)) {
+                colors = new int[colorsArray.length];
+                for (int i = 0; i < colors.length; i++) {
+                    colors[i] = Color.parseColor(colorsArray[i]);
+                }
+            } else {
+                colors = context.getResources().getIntArray(arrayId);
+            }
+            return setLayerColors(colors);
+        }
+
+        /**
+         * Set layer colors.
+         *
+         * @param colors array of colors
+         */
+        public T setLayerColors(int[] colors) {
+            layerColors = new float[colors.length][];
+            for (int i = 0; i < colors.length; i++) {
+                layerColors[i] = Utils.convertColor(colors[i]);
+            }
+            return getThis();
+        }
+
+        /**
+         * Set background color from color resource
+         *
+         * @param backgroundColor color resource
+         */
+        public T setBackgroundColorRes(@ColorRes int backgroundColor) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+                return setBackgroundColor(context.getResources().getColor(backgroundColor, context.getTheme()));
+            //noinspection deprecation
+            return setBackgroundColor(context.getResources().getColor(backgroundColor));
+        }
+
+        protected T getThis() {
+            //noinspection unchecked
+            return (T) this;
+        }
+    }
+
+    public static class Builder extends ColorsBuilder<Builder> {
 
 		private Context context;
 		private int wavesCount;
@@ -209,14 +286,18 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
 		private float waveHeight;
 		private float footerHeight;
 		private boolean randomizeBubbleSize;
-		private float[] backgroundColor;
-		private float[][] layerColors;
 
 		public Builder(@NonNull Context context) {
+            super(context);
 			this.context = context;
 		}
 
-		/**
+        @Override
+        protected Builder getThis() {
+            return this;
+        }
+
+        /**
 		 * Set waves count
 		 *
 		 * @param wavesCount waves count
@@ -303,53 +384,97 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
 			return this;
 		}
 
-		/**
-		 * Set background color
-		 *
-		 * @param backgroundColor background color
-		 */
-		public Builder setBackgroundColor(@ColorInt int backgroundColor) {
-			this.backgroundColor = Utils.convertColor(backgroundColor);
-			return this;
-		}
-
-		/**
-		 * Set background color from color resource
-		 *
-		 * @param backgroundColor color resource
-		 */
-		public Builder setBackgroundColorRes(@ColorRes int backgroundColor) {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-				return setBackgroundColor(context.getResources().getColor(backgroundColor, context.getTheme()));
-			//noinspection deprecation
-			return setBackgroundColor(context.getResources().getColor(backgroundColor));
-		}
-
-		/**
-		 * Set layer colors from array resource
-		 *
-		 * @param arrayId array resource
-		 */
-		public Builder setLayerColors(@ArrayRes int arrayId) {
-			String[] colorsArray = context.getResources().getStringArray(arrayId);
-			int[] colors;
-			if (!Utils.allElementsAreNull(colorsArray)) {
-				colors = new int[colorsArray.length];
-				for (int i = 0; i < colors.length; i++) {
-					colors[i] = Color.parseColor(colorsArray[i]);
-				}
-			} else {
-				colors = context.getResources().getIntArray(arrayId);
-			}
-			layerColors = new float[colors.length][];
-			for (int i = 0; i < colors.length; i++) {
-				layerColors[i] = Utils.convertColor(colors[i]);
-			}
-			return this;
-		}
-
 		public GLAudioVisualizationView build() {
 			return new GLAudioVisualizationView(this);
 		}
 	}
+
+    /**
+     * Renderer builder.
+     */
+    public static class RendererBuilder {
+
+        private final Builder builder;
+        private GLSurfaceView glSurfaceView;
+        private DbmHandler handler;
+
+        /**
+         * Create new renderer using existing Audio Visualization builder.
+         * @param builder instance of Audio Visualization builder
+         */
+        public RendererBuilder(@NonNull Builder builder) {
+            this.builder = builder;
+        }
+
+        /**
+         * Set dBm handler.
+         * @param handler instance of dBm handler
+         */
+        public RendererBuilder handler(DbmHandler handler) {
+            this.handler = handler;
+            return this;
+        }
+
+        /**
+         * Set OpenGL surface view.
+         * @param glSurfaceView instance of OpenGL surface view
+         */
+        public RendererBuilder glSurfaceView(@NonNull GLSurfaceView glSurfaceView) {
+            this.glSurfaceView = glSurfaceView;
+            return this;
+        }
+
+        /**
+         * Create new Audio Visualization Renderer.
+         * @return new Audio Visualization Renderer
+         */
+        public AudioVisualizationRenderer build() {
+            final GLRenderer renderer = new GLRenderer(builder.context, new Configuration(builder));
+            final InnerAudioVisualization audioVisualization = new InnerAudioVisualization() {
+                @Override
+                public void startRendering() {
+                    if (glSurfaceView.getRenderMode() != RENDERMODE_CONTINUOUSLY) {
+                        glSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
+                    }
+                }
+
+                @Override
+                public void stopRendering() {
+                    if (glSurfaceView.getRenderMode() != RENDERMODE_WHEN_DIRTY) {
+                        glSurfaceView.setRenderMode(RENDERMODE_WHEN_DIRTY);
+                    }
+                }
+
+                @Override
+                public void calmDownListener(@Nullable CalmDownListener calmDownListener) {
+
+                }
+
+                @Override
+                public void onDataReceived(float[] dBmArray, float[] ampsArray) {
+                    renderer.onDataReceived(dBmArray, ampsArray);
+                }
+            };
+            renderer.calmDownListener(new CalmDownListener() {
+                @Override
+                public void onCalmedDown() {
+                    audioVisualization.stopRendering();
+                }
+            });
+            handler.setUp(audioVisualization, builder.layersCount);
+            return renderer;
+        }
+    }
+
+    /**
+     * Audio Visualization renderer interface that allows to change waves' colors at runtime.
+     */
+    public interface AudioVisualizationRenderer extends Renderer {
+
+        /**
+         * Update colors configuration.
+         * @param builder instance of color builder.
+         */
+        void updateConfiguration(@NonNull ColorsBuilder builder);
+    }
 }

@@ -26,6 +26,7 @@ class GLWaveLayer {
 	private final Queue<GLBubble> unusedBubbles;
 	private final Set<GLBubble> producedBubbles;
     private boolean isCalmedDown;
+    private final GLBubble[] allBubbles;
 
 
 	public GLWaveLayer(GLAudioVisualizationView.Configuration configuration, float[] color, float fromY, float toY, Random random) {
@@ -45,8 +46,8 @@ class GLWaveLayer {
 		this.usedBubbles = new HashSet<>(BUBBLES_PER_LAYER);
 		this.unusedBubbles = new LinkedList<>();
 		this.producedBubbles = new HashSet<>(BUBBLES_PER_LAYER);
-		GLBubble[] bubbles = generateBubbles(color, BUBBLES_PER_LAYER);
-		Collections.addAll(unusedBubbles, bubbles);
+        allBubbles = generateBubbles(color, BUBBLES_PER_LAYER);
+		Collections.addAll(unusedBubbles, allBubbles);
 	}
 
     /**
@@ -176,4 +177,14 @@ class GLWaveLayer {
 		}
 		return bubbles;
 	}
+
+    public void setColor(float[] color) {
+        rectangle.setColor(color);
+        for (GLWave wave : waves) {
+            wave.setColor(color);
+        }
+        for (GLBubble bubble : allBubbles) {
+            bubble.setColor(color);
+        }
+    }
 }

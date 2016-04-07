@@ -12,7 +12,7 @@ import com.cleveroad.audiovisualization.DbmHandler;
 import com.cleveroad.audiovisualization.GLAudioVisualizationView;
 
 /**
- * Fragment with audio visualization view.
+ * Fragment with visualization of audio output.
  */
 public class AudioVisualizationFragment extends Fragment {
 
@@ -41,7 +41,7 @@ public class AudioVisualizationFragment extends Fragment {
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		audioVisualization = (AudioVisualization) view;
-		audioVisualization.linkTo(DbmHandler.Factory.newVisualizerHandler(0));
+		audioVisualization.linkTo(DbmHandler.Factory.newVisualizerHandler(getContext(), 0));
 	}
 
 	@Override

@@ -52,5 +52,7 @@ abstract class GLShape {
 		return program;
 	}
 
-
+    public void setColor(float[] color) {
+        System.arraycopy(color, 0, this.color, 0, this.color.length);
+    }
 }

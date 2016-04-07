@@ -142,4 +142,17 @@ class Utils {
         }
         return true;
     }
+
+    /**
+     * Check if all array elements equal to zero
+     * @param array some array
+     * @return true if all elements equal to zero
+     */
+    public static boolean allElementsAreZero(byte[] array) {
+        for (byte b : array) {
+            if (b != 0)
+                return false;
+        }
+        return true;
+    }
 }

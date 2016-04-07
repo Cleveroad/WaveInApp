@@ -1,5 +1,6 @@
 package com.cleveroad.audiovisualization;
 
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 
@@ -20,13 +21,19 @@ public class VisualizerDbmHandler extends DbmHandler<byte[]> implements Visualiz
     private float[] allAmps;
     private MediaPlayer.OnPreparedListener innerOnPreparedListener;
     private MediaPlayer.OnCompletionListener innerOnCompletionListener;
+    private final float[] coefficients = new float[] {
+            80 / 44100f,
+            350 / 44100f,
+            2500 / 44100f,
+            10000 / 44100f,
+    };
 
-    VisualizerDbmHandler(int audioSession) {
-        visualizerWrapper = new VisualizerWrapper(audioSession, this);
+    VisualizerDbmHandler(@NonNull Context context, int audioSession) {
+        visualizerWrapper = new VisualizerWrapper(context, audioSession, this);
     }
 
-    VisualizerDbmHandler(@NonNull MediaPlayer mediaPlayer) {
-        this(mediaPlayer.getAudioSessionId());
+    VisualizerDbmHandler(@NonNull Context context, @NonNull MediaPlayer mediaPlayer) {
+        this(context, mediaPlayer.getAudioSessionId());
         mediaPlayer.setOnPreparedListener(this);
         mediaPlayer.setOnCompletionListener(this);
     }
@@ -42,8 +49,8 @@ public class VisualizerDbmHandler extends DbmHandler<byte[]> implements Visualiz
             allAmps = new float[dataSize];
         }
         for (int i = 0; i < dataSize; i++) {
-            float re = fft[i];
-            float im = fft[i + 1];
+            float re = fft[2 * i];
+            float im = fft[2 * i + 1];
             float sqMag = re * re + im * im;
             dbs[i] = Utils.magnitudeToDb(sqMag);
             float k = 1;
@@ -52,9 +59,8 @@ public class VisualizerDbmHandler extends DbmHandler<byte[]> implements Visualiz
             }
             allAmps[i] = (float) (k * Math.sqrt(sqMag) / dataSize);
         }
-        int size = dbs.length / layersCount;
         for (int i = 0; i < layersCount; i++) {
-            int index = (int) ((i + 0.5f) * size);
+            int index = (int) (coefficients[i] * fft.length);
             float db = dbs[index];
             float amp = allAmps[index];
             dBmArray[i] = db / MAX_DB_VALUE;
@@ -77,6 +83,12 @@ public class VisualizerDbmHandler extends DbmHandler<byte[]> implements Visualiz
     public void onPause() {
         visualizerWrapper.setEnabled(false);
         super.onPause();
+    }
+
+    @Override
+    public void release() {
+        super.release();
+        visualizerWrapper.release();
     }
 
     @Override

@@ -9,9 +9,9 @@
     <color name="av_color_bg">#8f367c</color>
 
     <string-array name="av_colors">
-        <item>@color/av_color1</item>
-        <item>@color/av_color2</item>
-        <item>@color/av_color3</item>
         <item>@color/av_color4</item>
+        <item>@color/av_color3</item>
+        <item>@color/av_color2</item>
+        <item>@color/av_color1</item>
     </string-array>
 </resources>
