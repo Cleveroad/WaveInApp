@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <declare-styleable name="GLAudioVisualizationView" tools:ignore="ResourceName">
-        <attr name="av_waves_count" format="integer" />
-        <attr name="av_waves_colors" format="reference" />
-        <attr name="av_wave_height" format="dimension" />
-        <attr name="av_footer_height" format="dimension" />
-        <attr name="av_bubble_size" format="dimension" />
-        <attr name="av_randomize_bubble_size" format="boolean" />
-        <attr name="av_layers_count" format="integer" />
-        <attr name="av_background_color" format="color|reference" />
+        <attr name="av_wavesCount" format="integer" />
+        <attr name="av_wavesColors" format="reference" />
+        <attr name="av_wavesHeight" format="dimension" />
+        <attr name="av_wavesFooterHeight" format="dimension" />
+        <attr name="av_bubblesSize" format="dimension" />
+        <attr name="av_bubblesRandomizeSizes" format="boolean" />
+        <attr name="av_bubblesPerLayer" format="integer" />
+        <attr name="av_layersCount" format="integer" />
+        <attr name="av_backgroundColor" format="color|reference" />
     </declare-styleable>
 </resources>

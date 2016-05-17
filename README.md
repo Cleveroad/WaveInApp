@@ -24,7 +24,7 @@ To include this library to your project add dependency in **build.gradle** file:
 
 ```groovy
     dependencies {
-        compile 'com.cleveroad:audiovisualization:0.9.2'
+        compile 'com.cleveroad:audiovisualization:0.9.3'
     }
 ```
 
@@ -64,13 +64,14 @@ Via XML:
         android:id="@+id/visualizer_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:av_bubble_size="@dimen/bubble_size"
-        app:av_randomize_bubble_size="true"
-        app:av_wave_height="@dimen/wave_height"
-        app:av_footer_height="@dimen/footer_height"
-        app:av_waves_count="7"
-        app:av_layers_count="4"
-        app:av_background_color="@color/color_bg"
+        app:av_bubblesSize="@dimen/bubble_size"
+        app:av_bubblesRandomizeSizes="true"
+        app:av_wavesHeight="@dimen/wave_height"
+        app:av_wavesFooterHeight="@dimen/footer_height"
+        app:av_wavesCount="7"
+        app:av_layersCount="4"
+        app:av_backgroundColor="@color/av_color_bg"
+        app:av_bubblesPerLayer="16"
         />
 ```
 
@@ -78,14 +79,15 @@ Via Java code:
 
 ```JAVA
     new GLAudioVisualizationView.Builder(getContext())
-        .setBubbleSize(R.dimen.bubble_size)
-        .setRandomizeBubbleSize(true)
-        .setWaveHeight(R.dimen.wave_height)
-        .setFooterHeight(R.dimen.footer_height)
+        .setBubblesSize(R.dimen.bubble_size)
+        .setBubblesRandomizeSize(true)
+        .setWavesHeight(R.dimen.wave_height)
+        .setWavesFooterHeight(R.dimen.footer_height)
         .setWavesCount(7)
         .setLayersCount(4)
-        .setBackgroundColorRes(R.color.color_bg)
-        .setLayerColors(R.array.colors)
+        .setBackgroundColorRes(R.color.av_color_bg)
+        .setLayerColors(R.array.av_colors)
+        .setBubblesPerLayer(16)
         .build();
 ```
 
@@ -164,14 +166,29 @@ Your handler also will receive **onResume()**, **onPause()** and **release()** e
 
 | Version | Changes                         |
 | --- | --- |
+| v.0.9.3 | Fixed concurrent modification exception. Added ability to set number of bubbles per layer "
 | v.0.9.2 | Added voice recording example. Added ability to build audio visualization renderer. |
 | v.0.9.1 | Added ability to set custom dBm handler implementations; implemented SpeechRecognizerDbmHandler |
 | v.0.9.0 | First public release            |
 
-#### Migrations from v.0.9.1 to v.0.9.2
+#### Migration from v.0.9.2 to v.0.9.3
+All attributes and appropriate methods in builder were renamed.
+
+| Old name | New name |
+| --- | --- |
+| av_waves_count | av_wavesCount |
+| av_waves_colors | av_wavesColors |
+| av_wave_height | av_wavesHeight |
+| av_footer_height | av_wavesFooterHeight |
+| av_bubble_size | av_bubblesSize |
+| av_randomize_bubble_size | av_bubblesRandomizeSizes |
+| av_layers_count | av_layersCount |
+| av_background_color | av_backgroundColor |
+
+#### Migration from v.0.9.1 to v.0.9.2
 * **DbmHandler.Factory.newVisualizerHandler(int)** method signature changed to **DbmHandler.Factory.newVisualizerHandler(Context, int)**.
 
-#### Migrations from v.0.9.0 to v.0.9.1
+#### Migration from v.0.9.0 to v.0.9.1
 * All library resources and attributes were renamed, prefix `av_` was added. If you're adding Audio Visualization view through XML, make sure you'd properly renamed all attributes. See updated example above. 
 * All library resources were marked as private. If you're pointing to any library resource (color, dimen, etc), Android Studio will warn you.
 * All calculations of dBm values were moved to separate classes. Now you should use **DbmHandler.Factory** class to create new handlers and link it to audio visualization view using **linkTo(DbmHandler)** method. You can provide your implementation of DbmHandler as well.

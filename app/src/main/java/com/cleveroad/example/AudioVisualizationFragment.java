@@ -26,14 +26,15 @@ public class AudioVisualizationFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		return new GLAudioVisualizationView.Builder(getContext())
-				.setBubbleSize(R.dimen.bubble_size)
-				.setRandomizeBubbleSize(true)
-				.setWaveHeight(R.dimen.wave_height)
-				.setFooterHeight(R.dimen.footer_height)
+				.setBubblesSize(R.dimen.bubble_size)
+				.setBubblesRandomizeSize(true)
+				.setWavesHeight(R.dimen.wave_height)
+				.setWavesFooterHeight(R.dimen.footer_height)
 				.setWavesCount(7)
 				.setLayersCount(4)
 				.setBackgroundColorRes(R.color.av_color_bg)
 				.setLayerColors(R.array.av_colors)
+                .setBubblesPerLayer(16)
 				.build();
 	}
 

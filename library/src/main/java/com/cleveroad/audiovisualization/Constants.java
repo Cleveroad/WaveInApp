@@ -80,5 +80,20 @@ final class Constants {
 	 */
 	public static final float DEFAULT_FOOTER_HEIGHT = 640;
 
+    /**
+     * Default number of bubbles per layer.
+     */
+    public static final int DEFAULT_BUBBLES_PER_LAYER = 8;
+
+    /**
+     * Minimum number of bubbles per layer.
+     */
+    public static final int DEFAULT_BUBBLES_PER_LAYER_MIN = 1;
+
+    /**
+     * Maximum number of bubbles per layer.
+     */
+    public static final int DEFAULT_BUBBLES_PER_LAYER_MAX = 36;
+
 	private Constants() {}
 }
