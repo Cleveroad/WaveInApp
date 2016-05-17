@@ -172,7 +172,7 @@ Your handler also will receive **onResume()**, **onPause()** and **release()** e
 | v.0.9.0 | First public release            |
 
 #### Migration from v.0.9.2 to v.0.9.3
-All attributes were renamed.
+All attributes and appropriate methods in builder were renamed.
 
 | Old name | New name |
 | --- | --- |
