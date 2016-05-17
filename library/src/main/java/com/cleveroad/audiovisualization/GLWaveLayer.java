@@ -1,19 +1,18 @@
 package com.cleveroad.audiovisualization;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Wave layer implementation.
  */
 class GLWaveLayer {
 
-	private static final int BUBBLES_PER_LAYER = 8;
 	private final GLAudioVisualizationView.Configuration configuration;
 	private final GLWave[] waves;
 	private final GLRectangle rectangle;
@@ -43,10 +42,10 @@ class GLWaveLayer {
 			byte direction = i % 2 == 0 ? GLWave.DIRECTION_UP : GLWave.DIRECTION_DOWN;
 			waves[i] = new GLWave(color, points[i], points[i + 1], footerToY, toY, direction, random);
 		}
-		this.usedBubbles = new HashSet<>(BUBBLES_PER_LAYER);
-		this.unusedBubbles = new LinkedList<>();
-		this.producedBubbles = new HashSet<>(BUBBLES_PER_LAYER);
-        allBubbles = generateBubbles(color, BUBBLES_PER_LAYER);
+        this.usedBubbles = Collections.newSetFromMap(new ConcurrentHashMap<GLBubble, Boolean>());
+        this.producedBubbles = Collections.newSetFromMap(new ConcurrentHashMap<GLBubble, Boolean>());
+        this.unusedBubbles = new LinkedList<>();
+        allBubbles = generateBubbles(color, configuration.bubblesPerLayer);
 		Collections.addAll(unusedBubbles, allBubbles);
 	}
 
@@ -89,7 +88,7 @@ class GLWaveLayer {
 			wave.update(d);
             isCalmedDown &= wave.isCalmedDown();
 		}
-		usedBubbles.addAll(producedBubbles);
+        usedBubbles.addAll(producedBubbles);
 		producedBubbles.clear();
 		Iterator<GLBubble> iterator = usedBubbles.iterator();
 		while (iterator.hasNext()){

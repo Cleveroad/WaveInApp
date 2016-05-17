@@ -9,13 +9,13 @@
         android:id="@+id/visualizer_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:av_bubble_size="@dimen/bubble_size"
-        app:av_randomize_bubble_size="true"
-        app:av_wave_height="@dimen/wave_height"
-        app:av_footer_height="@dimen/footer_height"
-        app:av_waves_count="7"
-        app:av_layers_count="4"
-        app:av_background_color="@color/av_color_bg"
+        app:av_bubblesSize="@dimen/bubble_size"
+        app:av_bubblesRandomizeSizes="true"
+        app:av_wavesHeight="@dimen/wave_height"
+        app:av_wavesFooterHeight="@dimen/footer_height"
+        app:av_wavesCount="7"
+        app:av_layersCount="4"
+        app:av_backgroundColor="@color/av_color_bg"
         />
 
     <Button

@@ -34,6 +34,7 @@ public class AudioVisualizationFragment extends Fragment {
 				.setLayersCount(4)
 				.setBackgroundColorRes(R.color.av_color_bg)
 				.setLayerColors(R.array.av_colors)
+                .setBubblesPerLayer(16)
 				.build();
 	}
 
