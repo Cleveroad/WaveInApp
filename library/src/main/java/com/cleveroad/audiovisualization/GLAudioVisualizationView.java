@@ -311,7 +311,7 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
          *
          * @param bubbleSize bubbles size in pixels
          */
-        public Builder setBubbleSize(float bubbleSize) {
+        public Builder setBubblesSize(float bubbleSize) {
             this.bubbleSize = bubbleSize;
             return this;
         }
@@ -321,8 +321,8 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
          *
          * @param bubbleSize dimension resource
          */
-        public Builder setBubbleSize(@DimenRes int bubbleSize) {
-            return setBubbleSize((float) context.getResources().getDimensionPixelSize(bubbleSize));
+        public Builder setBubblesSize(@DimenRes int bubbleSize) {
+            return setBubblesSize((float) context.getResources().getDimensionPixelSize(bubbleSize));
         }
 
         /**
@@ -330,7 +330,7 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
          *
          * @param waveHeight wave height in pixels
          */
-        public Builder setWaveHeight(float waveHeight) {
+        public Builder setWavesHeight(float waveHeight) {
             this.waveHeight = waveHeight;
             return this;
         }
@@ -340,8 +340,8 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
          *
          * @param waveHeight dimension resource
          */
-        public Builder setWaveHeight(@DimenRes int waveHeight) {
-            return setWaveHeight((float) context.getResources().getDimensionPixelSize(waveHeight));
+        public Builder setWavesHeight(@DimenRes int waveHeight) {
+            return setWavesHeight((float) context.getResources().getDimensionPixelSize(waveHeight));
         }
 
         /**
@@ -349,7 +349,7 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
          *
          * @param footerHeight footer height in pixels
          */
-        public Builder setFooterHeight(float footerHeight) {
+        public Builder setWavesFooterHeight(float footerHeight) {
             this.footerHeight = footerHeight;
             return this;
         }
@@ -359,8 +359,8 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
          *
          * @param footerHeight dimension resource
          */
-        public Builder setFooterHeight(@DimenRes int footerHeight) {
-            return setFooterHeight((float) context.getResources().getDimensionPixelSize(footerHeight));
+        public Builder setWavesFooterHeight(@DimenRes int footerHeight) {
+            return setWavesFooterHeight((float) context.getResources().getDimensionPixelSize(footerHeight));
         }
 
         /**
@@ -368,7 +368,7 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
          *
          * @param randomizeBubbleSize true if size of bubbles should be randomized, false if size of bubbles must be the same
          */
-        public Builder setRandomizeBubbleSize(boolean randomizeBubbleSize) {
+        public Builder setBubblesRandomizeSize(boolean randomizeBubbleSize) {
             this.randomizeBubbleSize = randomizeBubbleSize;
             return this;
         }
