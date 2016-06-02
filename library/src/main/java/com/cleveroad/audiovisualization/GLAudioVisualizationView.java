@@ -146,7 +146,7 @@ public class GLAudioVisualizationView extends GLSurfaceView implements AudioVisu
                 if (bgColor == Color.TRANSPARENT) {
                     bgColor = ContextCompat.getColor(context, R.color.av_color_bg);
                 }
-                int arrayId = array.getResourceId(R.styleable.GLAudioVisualizationView_av_wavesColors, 0);
+                int arrayId = array.getResourceId(R.styleable.GLAudioVisualizationView_av_wavesColors, R.array.av_colors);
                 if (isInEditMode) {
                     colors = new int[layersCount];
                 } else {
