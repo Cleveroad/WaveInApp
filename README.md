@@ -149,10 +149,10 @@ When user leaves screen with audio visualization view, don't forget to free reso
 ```
 
 #### Live wallpapers
-You can use our Audio Visualization View as a live wallpaper. Just create your own [WallpaperService](https://developer.android.com/reference/android/service/wallpaper/WallpaperService.html). Method `onCreateEngine()` must return your own [Engine](https://developer.android.com/reference/android/service/wallpaper/WallpaperService.Engine.html) implementation, in which you must override the following methods:
-* `void onCreate(SurfaceHolder surfaceHolder)` - here create instance of `DbmHandler`, `GLAudioVisualizationView.Builder` (see example below) and `GLAudioVisualizationView.AudioVisualizationRenderer` in which you must set `Engine`'s surface holder and two previous instances via `constructor` and `handler()` method;
-* `void onVisibilityChanged(final boolean visible)` - here you must call `onResume()` methods for audioVisualizationView and dbmHandler instances if `visible` parameter is true, otherwise - call `onPause`;
-* `void onDestroy()` - just call `release()` for dbmHandler and `onDestroy()` for audioVisualizationView instances
+You can use our Audio Visualization View as a live wallpaper. Just create your own [WallpaperService](https://developer.android.com/reference/android/service/wallpaper/WallpaperService.html). Method `onCreateEngine()` must return your own [Engine](https://developer.android.com/reference/android/service/wallpaper/WallpaperService.Engine.html)'s implementation, in which you must override the following methods:
+* `void onCreate(SurfaceHolder surfaceHolder)` – here create instance of `DbmHandler`, `GLAudioVisualizationView.Builder` (see example below) and `GLAudioVisualizationView.AudioVisualizationRenderer` in which you must set `Engine`'s surface holder and two previous instances via `constructor` and `handler()` method;
+* `void onVisibilityChanged(final boolean visible)` – here you must call `onResume()` methods for audioVisualizationView and dbmHandler instances if `visible` parameter is `true`, otherwise – call `onPause()`;
+* `void onDestroy()` – just call `release()` for dbmHandler and `onDestroy()` for audioVisualizationView instances
 Check JavaDoc of this methods for more info.
 
 ```JAVA
