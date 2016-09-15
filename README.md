@@ -37,7 +37,7 @@ Audio visualization view uses OpenGL ES 2.0 for drawing waves. So you need to in
 
 ##### Using VisualizerDbmHandler
 
-All functionality of this handler built upon [Visualizer](http://developer.android.com/intl/ru/reference/android/media/audiofx/Visualizer.html) object, so you also need to include this permissions in your manifest:
+All functionality of this handler built upon [Visualizer] object, so you also need to include this permissions in your manifest:
 
 ```XML
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
@@ -46,13 +46,13 @@ All functionality of this handler built upon [Visualizer](http://developer.andro
 
 ##### Using SpeechRecognizerDbmHandler
 
-All functionality of this handler built upon [SpeechRecognizer](http://developer.android.com/intl/ru/reference/android/speech/SpeechRecognizer.html) object, so you also need to include this permissions in your manifest:
+All functionality of this handler built upon [SpeechRecognizer] object, so you also need to include this permissions in your manifest:
 
 ```XML
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 ```
 
-You must be very careful with new [Android M permissions](http://developer.android.com/intl/ru/training/permissions/requesting.html) flow. Make sure you have all necessary permissions before using **GLAudioVisualizationView**.
+You must be very careful with new [Android M permissions] flow. Make sure you have all necessary permissions before using **GLAudioVisualizationView**.
 
 There are two ways to include **GLAudioVisualizationView** in your layout: directly in XML layout file or using builder in Java code.
 
@@ -92,7 +92,7 @@ Via Java code:
         .build();
 ```
 
-**GLAudioVisualizationView** implements **AudioVisualization** interface. If you don't need all [GLSurfaceView](http://developer.android.com/intl/ru/reference/android/opengl/GLSurfaceView.html)'s public methods, you can simply cast your view to **AudioVisualization** interface and use it.
+**GLAudioVisualizationView** implements **AudioVisualization** interface. If you don't need all [GLSurfaceView]'s public methods, you can simply cast your view to **AudioVisualization** interface and use it.
 
 ```JAVA
     private AudioVisualization audioVisualization;
@@ -149,7 +149,7 @@ When user leaves screen with audio visualization view, don't forget to free reso
 ```
 
 ## Live wallpapers
-You can use our Audio Visualization View as a live wallpaper. Just create your own [WallpaperService](https://developer.android.com/reference/android/service/wallpaper/WallpaperService.html). Method `onCreateEngine()` should return your own [Engine](https://developer.android.com/reference/android/service/wallpaper/WallpaperService.Engine.html)'s implementation, in which you must override the following methods:
+You can use our Audio Visualization View as a live wallpaper. Just create your own [WallpaperService]. Method `onCreateEngine()` should return your own [Engine]'s implementation, in which you must override the following methods:
 * `void onCreate(SurfaceHolder surfaceHolder)` – here create instances of `DbmHandler`, `GLAudioVisualizationView.Builder` (see example below) and `GLAudioVisualizationView.AudioVisualizationRenderer` in which you must set `Engine`'s surface holder and two previous instances via `constructor(GLAudioVisualizationView.Builder)` and `handler()` methods;
 * `void onVisibilityChanged(final boolean visible)` – here you must call `onResume()` methods for audioVisualizationView and dbmHandler instances if `visible` parameter is `true`, otherwise – call `onPause()`;
 * `void onDestroy()` – just call `release()` for dbmHandler and `onDestroy()` for audioVisualizationView instances
@@ -201,7 +201,7 @@ Check JavaDoc of this methods for more info.
             }
          
 ```
-See uploaded [AudioVisualizationWallpaperService example](wallpaper/src/main/java/com/cleveroad/wallpaper/AudioVisualizationWallpaperService.java).  
+See uploaded [AudioVisualizationWallpaperService example].  
 <br/>
 
 ## Implementing your own DbmHandler
@@ -217,42 +217,16 @@ Then call **onDataReceived(T object)** method to visualize your data.
 Your handler also will receive **onResume()**, **onPause()** and **release()** events from audio visualization view.
 <br />
 
+## Migrations
+See all [migration manuals].
+
 ## Changelog
-| Version | Changes                         |
-| --- | --- |
-| v.0.9.4 | Fixed issues |
-| v.0.9.3 | Fixed concurrent modification exception. Added ability to set number of bubbles per layer |
-| v.0.9.2 | Added voice recording example. Added ability to build audio visualization renderer. |
-| v.0.9.1 | Added ability to set custom dBm handler implementations; implemented SpeechRecognizerDbmHandler |
-| v.0.9.0 | First public release            |
-
-#### Migration from v.0.9.2 to v.0.9.3
-All attributes and appropriate methods in builder were renamed.
-
-| Old name | New name |
-| --- | --- |
-| av_waves_count | av_wavesCount |
-| av_waves_colors | av_wavesColors |
-| av_wave_height | av_wavesHeight |
-| av_footer_height | av_wavesFooterHeight |
-| av_bubble_size | av_bubblesSize |
-| av_randomize_bubble_size | av_bubblesRandomizeSizes |
-| av_layers_count | av_layersCount |
-| av_background_color | av_backgroundColor |
-
-#### Migration from v.0.9.1 to v.0.9.2
-* **DbmHandler.Factory.newVisualizerHandler(int)** method signature changed to **DbmHandler.Factory.newVisualizerHandler(Context, int)**.
-
-#### Migration from v.0.9.0 to v.0.9.1
-* All library resources and attributes were renamed, prefix `av_` was added. If you're adding Audio Visualization view through XML, make sure you'd properly renamed all attributes. See updated example above. 
-* All library resources were marked as private. If you're pointing to any library resource (color, dimen, etc), Android Studio will warn you.
-* All calculations of dBm values were moved to separate classes. Now you should use **DbmHandler.Factory** class to create new handlers and link it to audio visualization view using **linkTo(DbmHandler)** method. You can provide your implementation of DbmHandler as well.
-* **setInnerOnPreparedListener()** and **setInnerOnCompletionListener()** methods moved to new **VisualizerDbmHandler** class.
+See [changelog history].
 <br />
 
 ## Troubleshooting
 #### Visualization
-If you have some issues with visualization (especially on Samsung Galaxy S or HTC devices) make sure you read [this Github issue](https://github.com/felixpalmer/android-visualizer/issues/5#issuecomment-25900391).
+If you have some issues with visualization (especially on Samsung Galaxy S or HTC devices) make sure you read [this Github issue].
 #### Live wallpapers
 * If you have some issues with WaveInApp live wallpapers on Android 6.0 (and later) make sure that all next permissions are granted: `android.permission.RECORD_AUDIO`, `android.permission.MODIFY_AUDIO_SETTINGS`.
 * If you run a wallpaper selection screen when the permissions was not granted, the wallpaper will not be appear. You must open settings screen and allow all permissions. If the wallpaper is not yet appeared, just restart the wallpaper selection screen.
@@ -285,3 +259,14 @@ If you have any other questions regarding the use of this library, please contac
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
+
+[migration manuals]: /MIGRATION.md
+[changelog history]: /CHANGELOG.md
+[AudioVisualizationWallpaperService example]: wallpaper/src/main/java/com/cleveroad/wallpaper/AudioVisualizationWallpaperService.java
+[WallpaperService]: https://developer.android.com/reference/android/service/wallpaper/WallpaperService.html
+[this Github issue]: https://github.com/felixpalmer/android-visualizer/issues/5#issuecomment-25900391
+[Engine]: https://developer.android.com/reference/android/service/wallpaper/WallpaperService.Engine.html
+[Visualizer]: http://developer.android.com/intl/ru/reference/android/media/audiofx/Visualizer.html
+[SpeechRecognizer]: http://developer.android.com/intl/ru/reference/android/speech/SpeechRecognizer.html
+[Android M permissions]: http://developer.android.com/intl/ru/training/permissions/requesting.html
+[GLSurfaceView]: http://developer.android.com/intl/ru/reference/android/opengl/GLSurfaceView.html
