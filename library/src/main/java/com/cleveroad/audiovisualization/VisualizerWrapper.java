@@ -48,7 +48,6 @@ class VisualizerWrapper {
             }
         };
         visualizer.setEnabled(true);
-
 	}
 
 	public void release() {
@@ -60,6 +59,7 @@ class VisualizerWrapper {
 	}
 
 	public void setEnabled(final boolean enabled) {
+        if(visualizer == null) return;
         visualizer.setEnabled(false);
         if (enabled) {
             visualizer.setDataCaptureListener(captureListener, captureRate, false, true);
