@@ -25,7 +25,7 @@ To include this library to your project add dependency in **build.gradle** file:
 
 ```groovy
     dependencies {
-        compile 'com.cleveroad:audiovisualization:0.9.4'
+        compile 'com.cleveroad:audiovisualization:1.0.0'
     }
 ```
 
