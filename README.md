@@ -18,6 +18,7 @@ Great visualization can spruce up any app, especially audio player. We suggest y
 <br/><br/>
 [![Awesome](/images/logo-footer.png)](https://www.cleveroad.com/?utm_source=github&utm_medium=label&utm_campaign=contacts)
 <br/>
+
 ## Setup and usage
 
 To include this library to your project add dependency in **build.gradle** file:
@@ -147,9 +148,62 @@ When user leaves screen with audio visualization view, don't forget to free reso
     }
 ```
 
-<br/>
-## Implementing your own DbmHandler
+#### Live wallpapers
+You can use our Audio Visualization View as a live wallpaper. Just create your own [WallpaperService](https://developer.android.com/reference/android/service/wallpaper/WallpaperService.html). Method `onCreateEngine()` must return your own [Engine](https://developer.android.com/reference/android/service/wallpaper/WallpaperService.Engine.html) implementation, in which you must override the following methods:
+* `void onCreate(SurfaceHolder surfaceHolder)` - here create instance of `DbmHandler`, `GLAudioVisualizationView.Builder` (see example below) and `GLAudioVisualizationView.AudioVisualizationRenderer` in which you must set `Engine`'s surface holder and two previous instances via `constructor` and `handler()` method;
+* `void onVisibilityChanged(final boolean visible)` - here you must call `onResume()` methods for audioVisualizationView and dbmHandler instances if `visible` parameter is true, otherwise - call `onPause`;
+* `void onDestroy()` - just call `release()` for dbmHandler and `onDestroy()` for audioVisualizationView instances
+Check JavaDoc of this methods for more info.
 
+```JAVA
+    public class AudioVisualizationWallpaperService extends WallpaperService {
+        @Override
+        public Engine onCreateEngine() {
+            return new WallpaperEngine();
+        }
+        
+        private class WallpaperEngine extends Engine {
+        
+        private WallpaperGLSurfaceView audioVisualizationView;
+        private DbmHandler dbmHandler;
+        private GLAudioVisualizationView.AudioVisualizationRenderer renderer;
+        ...
+            @Override
+            public void onCreate(SurfaceHolder surfaceHolder) {
+                AudioVisualizationWallpaperService context = AudioVisualizationWallpaperService.this;
+                audioVisualizationView = new WallpaperGLSurfaceView(context);
+                dbmHandler = DbmHandler.Factory.newVisualizerHandler(context, 0);
+                ...
+                GLAudioVisualizationView.Builder builder = new GLAudioVisualizationView.Builder(context)
+                        //... set your settings here (see builder example below);
+                renderer = new GLAudioVisualizationView.RendererBuilder(builder)
+                        .glSurfaceView(audioVisualizationView)
+                        .handler(dbmHandler)
+                        .build();
+                audioVisualizationView.setEGLContextClientVersion(2);
+                audioVisualizationView.setRenderer(renderer);
+            }
+            @Override
+            public void onVisibilityChanged(final boolean visible) {
+                if (visible) {
+                    audioVisualizationView.onResume();
+                    dbmHandler.onResume();
+                } else {
+                    dbmHandler.onPause();
+                    audioVisualizationView.onPause();
+                }
+            }
+            @Override
+            public void onDestroy() {
+                dbmHandler.release();
+                audioVisualizationView.onDestroy();
+            }
+         
+```
+See uploaded [AudioVisualizationWallpaperService example](wallpaper/src/main/java/com/cleveroad/wallpaper/AudioVisualizationWallpaperService.java).  
+<br/>
+
+## Implementing your own DbmHandler
 To implement you own data conversion handler, just extend your class from DbmHandler class and implement **onDataReceivedImpl(T object, int layersCount, float[] outDbmValues, float[] outAmpValues)** method where:
 * `object` - your custom data type
 * `layersCount` - count of layers you passed in **Builder**.
@@ -160,10 +214,9 @@ Check JavaDoc of this method for more info.
 Then call **onDataReceived(T object)** method to visualize your data.
 
 Your handler also will receive **onResume()**, **onPause()** and **release()** events from audio visualization view.
-
 <br />
-## Changelog
 
+## Changelog
 | Version | Changes                         |
 | --- | --- |
 | v.0.9.4 | Fixed issues |
@@ -194,18 +247,20 @@ All attributes and appropriate methods in builder were renamed.
 * All library resources were marked as private. If you're pointing to any library resource (color, dimen, etc), Android Studio will warn you.
 * All calculations of dBm values were moved to separate classes. Now you should use **DbmHandler.Factory** class to create new handlers and link it to audio visualization view using **linkTo(DbmHandler)** method. You can provide your implementation of DbmHandler as well.
 * **setInnerOnPreparedListener()** and **setInnerOnCompletionListener()** methods moved to new **VisualizerDbmHandler** class.
-
 <br />
+
 ## Troubleshooting
+#### Visualization
 If you have some issues with visualization (especially on Samsung Galaxy S or HTC devices) make sure you read [this Github issue](https://github.com/felixpalmer/android-visualizer/issues/5#issuecomment-25900391).
-
-
+#### Live wallpapers
+If you have some issues with WaveInApp live wallpapers on Android 6.0 (and later) make sure that all next permissions are granted: `android.permission.RECORD_AUDIO`, `android.permission.MODIFY_AUDIO_SETTINGS`.
+If you run a wallpaper selection screen when the permissions was not granted, the wallpaper will not be appear. You must open settings screen and allow all permissions. If the wallpaper is not yet appeared, just restart the wallpaper selection screen.
 <br />
+
 ## Support
-
 If you have any other questions regarding the use of this library, please contact us for support at info@cleveroad.com (email subject: "Android visualization view. Support request.") 
-
 <br />
+
 ## License
 * * *
     The MIT License (MIT)

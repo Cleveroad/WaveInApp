@@ -1,19 +1,22 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
-        applicationId "com.cleveroad.audiovisualization.example"
+        applicationId "com.cleveroad.audiovisualization.wallpaper"
         minSdkVersion 11
         targetSdkVersion 24
         versionCode 1
         versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -21,9 +24,15 @@ android {
 
 dependencies {
     final SUPPORT_LIB_VERSION = '24.2.0'
+    final COLOR_PICKER_VERSION = '1.5'
+    final BUTTER_KNIFE_VERSION = '7.0.1'
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    //noinspection GradleDependency
+
+    //noinspection GradleCompatible
     compile "com.android.support:appcompat-v7:$SUPPORT_LIB_VERSION"
+    compile "com.larswerkman:HoloColorPicker:$COLOR_PICKER_VERSION"
+    compile "com.jakewharton:butterknife:$BUTTER_KNIFE_VERSION"
+
     compile project(':library')
 }

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#2196F3</color>
+    <color name="colorPrimaryDark">#1976D2</color>
+    <color name="colorAccent">#CDDC39</color>
+
+    <string-array name="color_preset1">
+        <item>#8f367c</item>
+        <item>#bc428b</item>
+        <item>#e36a97</item>
+        <item>#f0979b</item>
+        <item>#f7b09e</item>
+    </string-array>
+
+    <string-array name="color_preset2">
+        <item>#3b5088</item>
+        <item>#5460ae</item>
+        <item>#8c80d0</item>
+        <item>#c19fdd</item>
+        <item>#deb1e2</item>
+    </string-array>
+
+    <string-array name="color_preset3">
+        <item>#943a52</item>
+        <item>#b94855</item>
+        <item>#d47466</item>
+        <item>#d99e7c</item>
+        <item>#d9b787</item>
+    </string-array>
+
+    <string-array name="color_preset4">
+        <item>#235c2e</item>
+        <item>#257442</item>
+        <item>#4c997d</item>
+        <item>#7bb6b1</item>
+        <item>#97c5cf</item>
+    </string-array>
+
+    <string-array name="color_preset5">
+        <item>#4e4e4e</item>
+        <item>#606060</item>
+        <item>#878787</item>
+        <item>#a9a9a9</item>
+        <item>#bcbcbc</item>
+    </string-array>
+
+    <string-array name="color_preset6">
+        <item>#5b47b0</item>
+        <item>#8353d8</item>
+        <item>#c474ec</item>
+        <item>#ef93e2</item>
+        <item>#fda6da</item>
+    </string-array>
+
+    <string-array name="color_preset7">
+        <item>#006982</item>
+        <item>#007eb9</item>
+        <item>#2c99f4</item>
+        <item>#86adfe</item>
+        <item>#b9b7fe</item>
+    </string-array>
+
+    <string-array name="color_preset8">
+        <item>#495a01</item>
+        <item>#427701</item>
+        <item>#47a501</item>
+        <item>#58c552</item>
+        <item>#63d98b</item>
+    </string-array>
+</resources>
