@@ -148,9 +148,9 @@ When user leaves screen with audio visualization view, don't forget to free reso
     }
 ```
 
-#### Live wallpapers
-You can use our Audio Visualization View as a live wallpaper. Just create your own [WallpaperService](https://developer.android.com/reference/android/service/wallpaper/WallpaperService.html). Method `onCreateEngine()` must return your own [Engine](https://developer.android.com/reference/android/service/wallpaper/WallpaperService.Engine.html)'s implementation, in which you must override the following methods:
-* `void onCreate(SurfaceHolder surfaceHolder)` – here create instance of `DbmHandler`, `GLAudioVisualizationView.Builder` (see example below) and `GLAudioVisualizationView.AudioVisualizationRenderer` in which you must set `Engine`'s surface holder and two previous instances via `constructor` and `handler()` method;
+## Live wallpapers
+You can use our Audio Visualization View as a live wallpaper. Just create your own [WallpaperService](https://developer.android.com/reference/android/service/wallpaper/WallpaperService.html). Method `onCreateEngine()` should return your own [Engine](https://developer.android.com/reference/android/service/wallpaper/WallpaperService.Engine.html)'s implementation, in which you must override the following methods:
+* `void onCreate(SurfaceHolder surfaceHolder)` – here create instances of `DbmHandler`, `GLAudioVisualizationView.Builder` (see example below) and `GLAudioVisualizationView.AudioVisualizationRenderer` in which you must set `Engine`'s surface holder and two previous instances via `constructor(GLAudioVisualizationView.Builder)` and `handler()` methods;
 * `void onVisibilityChanged(final boolean visible)` – here you must call `onResume()` methods for audioVisualizationView and dbmHandler instances if `visible` parameter is `true`, otherwise – call `onPause()`;
 * `void onDestroy()` – just call `release()` for dbmHandler and `onDestroy()` for audioVisualizationView instances
 Check JavaDoc of this methods for more info.
@@ -185,6 +185,7 @@ Check JavaDoc of this methods for more info.
             }
             @Override
             public void onVisibilityChanged(final boolean visible) {
+                //Please follow the next order of methods call!
                 if (visible) {
                     audioVisualizationView.onResume();
                     dbmHandler.onResume();
@@ -253,8 +254,8 @@ All attributes and appropriate methods in builder were renamed.
 #### Visualization
 If you have some issues with visualization (especially on Samsung Galaxy S or HTC devices) make sure you read [this Github issue](https://github.com/felixpalmer/android-visualizer/issues/5#issuecomment-25900391).
 #### Live wallpapers
-If you have some issues with WaveInApp live wallpapers on Android 6.0 (and later) make sure that all next permissions are granted: `android.permission.RECORD_AUDIO`, `android.permission.MODIFY_AUDIO_SETTINGS`.
-If you run a wallpaper selection screen when the permissions was not granted, the wallpaper will not be appear. You must open settings screen and allow all permissions. If the wallpaper is not yet appeared, just restart the wallpaper selection screen.
+* If you have some issues with WaveInApp live wallpapers on Android 6.0 (and later) make sure that all next permissions are granted: `android.permission.RECORD_AUDIO`, `android.permission.MODIFY_AUDIO_SETTINGS`.
+* If you run a wallpaper selection screen when the permissions was not granted, the wallpaper will not be appear. You must open settings screen and allow all permissions. If the wallpaper is not yet appeared, just restart the wallpaper selection screen.
 <br />
 
 ## Support
