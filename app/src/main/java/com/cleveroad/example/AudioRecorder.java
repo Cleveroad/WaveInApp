@@ -13,37 +13,24 @@ import java.io.FileNotFoundException;
  */
 class AudioRecorder implements IAudioRecorder {
 
-    public static final int RECORDER_SAMPLE_RATE = 8000;
-    public static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_OUT_MONO;
     public static final int RECORDER_AUDIO_ENCODING = AudioFormat.ENCODING_PCM_16BIT;
-
-
-    private static final int BUFFER_BYTES_ELEMENTS = 1024;
-    private static final int BUFFER_BYTES_PER_ELEMENT = RECORDER_AUDIO_ENCODING;
-    private static final int RECORDER_CHANNELS_IN = AudioFormat.CHANNEL_IN_MONO;
-
-
+    public static final int RECORDER_CHANNELS = AudioFormat.CHANNEL_OUT_MONO;
+    public static final int RECORDER_SAMPLE_RATE = 8000;
+    public static final int RECORDER_STATE_BUSY = 3;
     public static final int RECORDER_STATE_FAILURE = -1;
     public static final int RECORDER_STATE_IDLE = 0;
     public static final int RECORDER_STATE_STARTING = 1;
     public static final int RECORDER_STATE_STOPPING = 2;
-    public static final int RECORDER_STATE_BUSY = 3;
-
-    private volatile int recorderState;
-
+    private static final int BUFFER_BYTES_ELEMENTS = 1024;
+    private static final int BUFFER_BYTES_PER_ELEMENT = RECORDER_AUDIO_ENCODING;
+    private static final int RECORDER_CHANNELS_IN = AudioFormat.CHANNEL_IN_MONO;
     private final Object recorderStateMonitor = new Object();
-
+    private volatile int recorderState;
     private RecordingCallback recordingCallback;
 
     public AudioRecorder recordingCallback(RecordingCallback recordingCallback) {
         this.recordingCallback = recordingCallback;
         return this;
-    }
-
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void onRecordFailure() {
-        recorderState = RECORDER_STATE_FAILURE;
-        finishRecord();
     }
 
     @Override
@@ -62,17 +49,46 @@ class AudioRecorder implements IAudioRecorder {
         }
     }
 
+    @Override
+    public void finishRecord() {
+        int recorderStateLocal = recorderState;
+        if (recorderStateLocal != RECORDER_STATE_IDLE) {
+            synchronized (recorderStateMonitor) {
+                recorderStateLocal = recorderState;
+                if (recorderStateLocal == RECORDER_STATE_STARTING
+                        || recorderStateLocal == RECORDER_STATE_BUSY) {
+
+                    recorderStateLocal = recorderState = RECORDER_STATE_STOPPING;
+                }
+
+                do {
+                    try {
+                        if (recorderStateLocal != RECORDER_STATE_IDLE) {
+                            recorderStateMonitor.wait();
+                        }
+                    } catch (InterruptedException ignore) {
+                        /* Nothing to do */
+                    }
+                    recorderStateLocal = recorderState;
+                } while (recorderStateLocal == RECORDER_STATE_STOPPING);
+            }
+        }
+    }
+
+    @Override
+    public boolean isRecording() {
+        return recorderState != RECORDER_STATE_IDLE;
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private void onRecordFailure() {
+        recorderState = RECORDER_STATE_FAILURE;
+        finishRecord();
+    }
+
     private void startRecordThread() throws FileNotFoundException {
 
         new Thread(new PriorityRunnable(Process.THREAD_PRIORITY_AUDIO) {
-
-            private void onExit() {
-                synchronized (recorderStateMonitor) {
-                    recorderState = RECORDER_STATE_IDLE;
-                    recorderStateMonitor.notifyAll();
-                }
-            }
-
 
             @SuppressWarnings("ResultOfMethodCallIgnored")
             @Override
@@ -104,39 +120,14 @@ class AudioRecorder implements IAudioRecorder {
                 }
                 onExit();
             }
-        }).start();
-    }
 
-    @Override
-    public void finishRecord() {
-        int recorderStateLocal = recorderState;
-        if (recorderStateLocal != RECORDER_STATE_IDLE) {
-            synchronized (recorderStateMonitor) {
-                recorderStateLocal = recorderState;
-                if (recorderStateLocal == RECORDER_STATE_STARTING
-                        || recorderStateLocal == RECORDER_STATE_BUSY) {
-
-                    recorderStateLocal = recorderState = RECORDER_STATE_STOPPING;
+            private void onExit() {
+                synchronized (recorderStateMonitor) {
+                    recorderState = RECORDER_STATE_IDLE;
+                    recorderStateMonitor.notifyAll();
                 }
-
-                do {
-                    try {
-                        if (recorderStateLocal != RECORDER_STATE_IDLE) {
-                            recorderStateMonitor.wait();
-                        }
-                    } catch (InterruptedException ignore) {
-                        /* Nothing to do */
-                    }
-                    recorderStateLocal = recorderState;
-                } while (recorderStateLocal == RECORDER_STATE_STOPPING);
             }
-        }
-    }
-
-
-    @Override
-    public boolean isRecording() {
-        return recorderState != RECORDER_STATE_IDLE;
+        }).start();
     }
 
     interface RecordingCallback {

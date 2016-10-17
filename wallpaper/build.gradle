@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 24
+    buildToolsVersion "24.0.3"
 
     defaultConfig {
         applicationId "com.cleveroad.audiovisualization.wallpaper"
@@ -23,16 +23,10 @@ android {
 }
 
 dependencies {
-    final SUPPORT_LIB_VERSION = '24.2.0'
-    final COLOR_PICKER_VERSION = '1.5'
-    final BUTTER_KNIFE_VERSION = '7.0.1'
-
     compile fileTree(dir: 'libs', include: ['*.jar'])
-
-    //noinspection GradleCompatible
-    compile "com.android.support:appcompat-v7:$SUPPORT_LIB_VERSION"
-    compile "com.larswerkman:HoloColorPicker:$COLOR_PICKER_VERSION"
-    compile "com.jakewharton:butterknife:$BUTTER_KNIFE_VERSION"
+    compile "com.android.support:appcompat-v7:24.2.1"
+    compile "com.larswerkman:HoloColorPicker:1.5"
+    compile "com.jakewharton:butterknife:7.0.1"
 
     compile project(':library')
 }

@@ -3,8 +3,8 @@ package com.cleveroad.example;
 import android.os.Process;
 
 /**
-* Runnable that set thread priority before execution. See {@link Process} for list of available priority levels.
-*/
+ * Runnable that set thread priority before execution. See {@link Process} for list of available priority levels.
+ */
 abstract class PriorityRunnable implements Runnable {
     private int threadPriority;
 

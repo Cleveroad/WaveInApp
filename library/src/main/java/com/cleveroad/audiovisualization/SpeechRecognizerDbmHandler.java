@@ -15,15 +15,16 @@ import android.support.annotation.Nullable;
  */
 public class SpeechRecognizerDbmHandler extends DbmHandler<Float> implements RecognitionListener {
 
-    private static final float MIN_RMS_DB_VALUE = -2.12f;
     private static final float MAX_RMS_DB_VALUE = 10.0f;
-    private final SpeechRecognizer speechRecognizer;
-    private final float minRmsDbValue;
-    private final float maxRmsDbValue;
-    private RecognitionListener innerRecognitionListener;
+    private static final float MIN_RMS_DB_VALUE = -2.12f;
+    private final float mMaxRmsDbValue;
+    private final float mMinRmsDbValue;
+    private final SpeechRecognizer mSpeechRecognizer;
+    private RecognitionListener mRecognitionListener;
 
     /**
      * Create new instance of DbmHandler with default RMS dB values.
+     *
      * @param context instance of context.
      */
     SpeechRecognizerDbmHandler(@NonNull Context context) {
@@ -32,128 +33,133 @@ public class SpeechRecognizerDbmHandler extends DbmHandler<Float> implements Rec
 
     /**
      * Create new instance of DbmHandler and set {@code maxRmsDbValue}.
-     * @param context instance of context
+     *
+     * @param context       instance of context
      * @param maxRmsDbValue maximum RMS dB value
      */
     SpeechRecognizerDbmHandler(@NonNull Context context, float minRmsDbValue, float maxRmsDbValue) {
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
-        speechRecognizer.setRecognitionListener(this);
-        this.minRmsDbValue = minRmsDbValue;
-        this.maxRmsDbValue = maxRmsDbValue;
-    }
-
-    /**
-     * Start listening for speech.
-     * @param recognitionIntent contains parameters for the recognition to be performed
-     * @see SpeechRecognizer#startListening(Intent)
-     */
-    public void startListening(Intent recognitionIntent) {
-        speechRecognizer.startListening(recognitionIntent);
-    }
-
-    /**
-     * Stop listening for speech.
-     * @see SpeechRecognizer#stopListening()
-     */
-    public void stopListening() {
-        speechRecognizer.stopListening();
+        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
+        mSpeechRecognizer.setRecognitionListener(this);
+        mMinRmsDbValue = minRmsDbValue;
+        mMaxRmsDbValue = maxRmsDbValue;
     }
 
     /**
      * Set inner recognition listener.
+     *
      * @param innerRecognitionListener inner recognition listener
      */
     public SpeechRecognizerDbmHandler innerRecognitionListener(@Nullable RecognitionListener innerRecognitionListener) {
-        this.innerRecognitionListener = innerRecognitionListener;
+        mRecognitionListener = innerRecognitionListener;
         return this;
     }
 
     /**
      * Get inner recognition listener.
+     *
      * @return inner recognition listener
      */
     public RecognitionListener innerRecognitionListener() {
-        return innerRecognitionListener;
-    }
-
-    @Override
-    protected void onDataReceivedImpl(Float rmsdB, int layersCount, float[] dBmArray, float[] ampsArray) {
-        for (int i = 0; i < layersCount; i++) {
-            dBmArray[i] = Utils.normalize(rmsdB, minRmsDbValue, maxRmsDbValue);
-            ampsArray[i] = 1;
-        }
-    }
-
-    @Override
-    public void release() {
-        super.release();
-        speechRecognizer.destroy();
+        return mRecognitionListener;
     }
 
     @Override
     public void onReadyForSpeech(Bundle params) {
-        if (innerRecognitionListener != null) {
-            innerRecognitionListener.onReadyForSpeech(params);
+        if (mRecognitionListener != null) {
+            mRecognitionListener.onReadyForSpeech(params);
         }
     }
 
     @Override
     public void onBeginningOfSpeech() {
-        if (innerRecognitionListener != null) {
-            innerRecognitionListener.onBeginningOfSpeech();
+        if (mRecognitionListener != null) {
+            mRecognitionListener.onBeginningOfSpeech();
         }
     }
 
     @Override
     public void onRmsChanged(float rmsdB) {
         onDataReceived(rmsdB);
-        if (innerRecognitionListener != null) {
-            innerRecognitionListener.onRmsChanged(rmsdB);
+        if (mRecognitionListener != null) {
+            mRecognitionListener.onRmsChanged(rmsdB);
         }
     }
 
     @Override
     public void onBufferReceived(byte[] buffer) {
-        if (innerRecognitionListener != null) {
-            innerRecognitionListener.onBufferReceived(buffer);
+        if (mRecognitionListener != null) {
+            mRecognitionListener.onBufferReceived(buffer);
         }
     }
 
     @Override
     public void onEndOfSpeech() {
-        if (innerRecognitionListener != null) {
-            innerRecognitionListener.onEndOfSpeech();
+        if (mRecognitionListener != null) {
+            mRecognitionListener.onEndOfSpeech();
         }
     }
 
     @Override
     public void onError(int error) {
-        if (innerRecognitionListener != null) {
-            innerRecognitionListener.onError(error);
+        if (mRecognitionListener != null) {
+            mRecognitionListener.onError(error);
         }
     }
 
     @Override
     public void onResults(Bundle results) {
-        speechRecognizer.cancel();
-        onDataReceived(minRmsDbValue);
+        mSpeechRecognizer.cancel();
+        onDataReceived(mMinRmsDbValue);
         calmDownAndStopRendering();
-        if (innerRecognitionListener != null) {
-            innerRecognitionListener.onResults(results);
+        if (mRecognitionListener != null) {
+            mRecognitionListener.onResults(results);
         }
     }
 
     @Override
     public void onPartialResults(Bundle partialResults) {
-        if (innerRecognitionListener != null) {
-            innerRecognitionListener.onPartialResults(partialResults);
+        if (mRecognitionListener != null) {
+            mRecognitionListener.onPartialResults(partialResults);
         }
     }
 
     @Override
     public void onEvent(int eventType, Bundle params) {
-        if (innerRecognitionListener != null) {
-            innerRecognitionListener.onEvent(eventType, params);
+        if (mRecognitionListener != null) {
+            mRecognitionListener.onEvent(eventType, params);
         }
+    }
+
+    @Override
+    public void release() {
+        super.release();
+        mSpeechRecognizer.destroy();
+    }
+
+    @Override
+    protected void onDataReceivedImpl(Float rmsdB, int layersCount, @NonNull float[] dBmArray, @NonNull float[] ampsArray) {
+        for (int i = 0; i < layersCount; i++) {
+            dBmArray[i] = Utils.normalize(rmsdB, mMinRmsDbValue, mMaxRmsDbValue);
+            ampsArray[i] = 1;
+        }
+    }
+
+    /**
+     * Start listening for speech.
+     *
+     * @param recognitionIntent contains parameters for the recognition to be performed
+     * @see SpeechRecognizer#startListening(Intent)
+     */
+    public void startListening(Intent recognitionIntent) {
+        mSpeechRecognizer.startListening(recognitionIntent);
+    }
+
+    /**
+     * Stop listening for speech.
+     *
+     * @see SpeechRecognizer#stopListening()
+     */
+    public void stopListening() {
+        mSpeechRecognizer.stopListening();
     }
 }

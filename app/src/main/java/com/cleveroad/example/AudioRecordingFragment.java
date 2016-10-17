@@ -1,6 +1,7 @@
 package com.cleveroad.example;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,14 +17,14 @@ import com.cleveroad.audiovisualization.DbmHandler;
  */
 public class AudioRecordingFragment extends Fragment {
 
-    public static AudioRecordingFragment newInstance() {
-        return new AudioRecordingFragment();
-    }
-
+    private AudioRecorder audioRecorder;
     private AudioVisualization audioVisualization;
     private Button btnRecord;
     private AudioRecordingDbmHandler handler;
-    private AudioRecorder audioRecorder;
+
+    public static AudioRecordingFragment newInstance() {
+        return new AudioRecordingFragment();
+    }
 
     @Nullable
     @Override
@@ -59,12 +60,20 @@ public class AudioRecordingFragment extends Fragment {
     private static class AudioRecordingDbmHandler extends DbmHandler<byte[]> implements AudioRecorder.RecordingCallback {
 
         private static final float MAX_DB_VALUE = 170;
-
-        private float[] dbs;
         private float[] allAmps;
+        private float[] dbs;
 
         @Override
-        protected void onDataReceivedImpl(byte[] bytes, int layersCount, float[] dBmArray, float[] ampsArray) {
+        public void onDataReady(byte[] data) {
+            onDataReceived(data);
+        }
+
+        public void stop() {
+            calmDownAndStopRendering();
+        }
+
+        @Override
+        protected void onDataReceivedImpl(byte[] bytes, int layersCount, @NonNull float[] dBmArray, @NonNull float[] ampsArray) {
 
             final int bytesPerSample = 2; // As it is 16bit PCM
             final double amplification = 100.0; // choose a number as you like
@@ -110,15 +119,6 @@ public class AudioRecordingFragment extends Fragment {
                 dBmArray[i] = db > MAX_DB_VALUE ? 1 : db / MAX_DB_VALUE;
                 ampsArray[i] = amp;
             }
-        }
-
-        public void stop() {
-            calmDownAndStopRendering();
-        }
-
-        @Override
-        public void onDataReady(byte[] data) {
-            onDataReceived(data);
         }
     }
 }

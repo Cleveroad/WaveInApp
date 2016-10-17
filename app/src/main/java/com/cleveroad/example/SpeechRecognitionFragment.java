@@ -20,14 +20,14 @@ import com.cleveroad.audiovisualization.SpeechRecognizerDbmHandler;
  */
 public class SpeechRecognitionFragment extends Fragment {
 
-    public static SpeechRecognitionFragment newInstance() {
-        return new SpeechRecognitionFragment();
-    }
-
     private AudioVisualization audioVisualization;
     private Button btnRecognize;
     private SpeechRecognizerDbmHandler handler;
     private boolean recognizing;
+
+    public static SpeechRecognitionFragment newInstance() {
+        return new SpeechRecognitionFragment();
+    }
 
     @Nullable
     @Override
@@ -65,25 +65,25 @@ public class SpeechRecognitionFragment extends Fragment {
             }
 
             @Override
-            public void onResults(Bundle results) {
-                super.onResults(results);
-                onStopRecognizing();
-            }
-
-            @Override
             public void onError(int error) {
                 super.onError(error);
                 onStopRecognizing();
 
             }
+
+            @Override
+            public void onResults(Bundle results) {
+                super.onResults(results);
+                onStopRecognizing();
+            }
         });
         audioVisualization.linkTo(handler);
     }
 
-    private void onStopRecognizing() {
-        recognizing = false;
-        btnRecognize.setText(R.string.start_recognition);
-        btnRecognize.setEnabled(true);
+    @Override
+    public void onDestroyView() {
+        audioVisualization.release();
+        super.onDestroyView();
     }
 
     private void onStartRecognizing() {
@@ -92,10 +92,10 @@ public class SpeechRecognitionFragment extends Fragment {
         recognizing = true;
     }
 
-    @Override
-    public void onDestroyView() {
-        audioVisualization.release();
-        super.onDestroyView();
+    private void onStopRecognizing() {
+        recognizing = false;
+        btnRecognize.setText(R.string.start_recognition);
+        btnRecognize.setEnabled(true);
     }
 
     private static class SimpleRecognitionListener implements RecognitionListener {

@@ -11,19 +11,19 @@ import android.support.annotation.NonNull;
 class VisualizerWrapper {
 
     private static final long WAIT_UNTIL_HACK = 500;
-	private Visualizer visualizer;
-    private MediaPlayer mediaPlayer;
-    private Visualizer.OnDataCaptureListener captureListener;
-    private int captureRate;
-    private long lastZeroArrayTimestamp;
+    private Visualizer.OnDataCaptureListener mOnDataCaptureListener;
+    private int mCaptureRate;
+    private long mLastZeroArrayTimestamp;
+    private MediaPlayer mMediaPlayer;
+    private Visualizer mVisualizer;
 
-	public VisualizerWrapper(@NonNull Context context, int audioSessionId, @NonNull final OnFftDataCaptureListener onFftDataCaptureListener) {
-        mediaPlayer = MediaPlayer.create(context, R.raw.av_workaround_1min);
-		visualizer = new Visualizer(audioSessionId);
-        visualizer.setEnabled(false);
-		visualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
-        captureRate = Visualizer.getMaxCaptureRate();
-        captureListener = new Visualizer.OnDataCaptureListener() {
+    VisualizerWrapper(@NonNull Context context, int audioSessionId, @NonNull final OnFftDataCaptureListener onFftDataCaptureListener) {
+        mMediaPlayer = MediaPlayer.create(context, R.raw.av_workaround_1min);
+        mVisualizer = new Visualizer(audioSessionId);
+        mVisualizer.setEnabled(false);
+        mVisualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
+        mCaptureRate = Visualizer.getMaxCaptureRate();
+        mOnDataCaptureListener = new Visualizer.OnDataCaptureListener() {
             @Override
             public void onWaveFormDataCapture(Visualizer visualizer, byte[] waveform, int samplingRate) {
 
@@ -32,44 +32,44 @@ class VisualizerWrapper {
             @Override
             public void onFftDataCapture(Visualizer visualizer, byte[] fft, int samplingRate) {
                 boolean allZero = Utils.allElementsAreZero(fft);
-                if (lastZeroArrayTimestamp  == 0) {
+                if (mLastZeroArrayTimestamp == 0) {
                     if (allZero) {
-                        lastZeroArrayTimestamp = System.currentTimeMillis();
+                        mLastZeroArrayTimestamp = System.currentTimeMillis();
                     }
-                } else  {
+                } else {
                     if (!allZero) {
-                        lastZeroArrayTimestamp = 0;
-                    } else if (System.currentTimeMillis() - lastZeroArrayTimestamp >= WAIT_UNTIL_HACK) {
+                        mLastZeroArrayTimestamp = 0;
+                    } else if (System.currentTimeMillis() - mLastZeroArrayTimestamp >= WAIT_UNTIL_HACK) {
                         setEnabled(true);
-                        lastZeroArrayTimestamp = 0;
+                        mLastZeroArrayTimestamp = 0;
                     }
                 }
                 onFftDataCaptureListener.onFftDataCapture(fft);
             }
         };
-        visualizer.setEnabled(true);
-	}
+        mVisualizer.setEnabled(true);
+    }
 
-	public void release() {
-        visualizer.setEnabled(false);
-        visualizer.release();
-        visualizer = null;
-        mediaPlayer.release();
-        mediaPlayer = null;
-	}
+    public void release() {
+        mVisualizer.setEnabled(false);
+        mVisualizer.release();
+        mVisualizer = null;
+        mMediaPlayer.release();
+        mMediaPlayer = null;
+    }
 
-	public void setEnabled(final boolean enabled) {
-        if(visualizer == null) return;
-        visualizer.setEnabled(false);
+    public void setEnabled(final boolean enabled) {
+        if (mVisualizer == null) return;
+        mVisualizer.setEnabled(false);
         if (enabled) {
-            visualizer.setDataCaptureListener(captureListener, captureRate, false, true);
+            mVisualizer.setDataCaptureListener(mOnDataCaptureListener, mCaptureRate, false, true);
         } else {
-            visualizer.setDataCaptureListener(null, captureRate, false, false);
+            mVisualizer.setDataCaptureListener(null, mCaptureRate, false, false);
         }
-        visualizer.setEnabled(true);
-	}
+        mVisualizer.setEnabled(true);
+    }
 
-	public interface OnFftDataCaptureListener {
-		void onFftDataCapture(byte[] fft);
-	}
+    interface OnFftDataCaptureListener {
+        void onFftDataCapture(byte[] fft);
+    }
 }

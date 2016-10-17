@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    buildToolsVersion "24.0.3"
 
     defaultConfig {
         minSdkVersion 11
@@ -21,11 +21,8 @@ android {
 }
 
 dependencies {
-    final SUPPORT_LIB_VERSION = '24.2.0'
-
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    //noinspection GradleDependency
-    compile "com.android.support:appcompat-v7:$SUPPORT_LIB_VERSION"
+    compile "com.android.support:appcompat-v7:24.2.1"
 }
 
 apply from: './gradle-mvn-push.gradle'

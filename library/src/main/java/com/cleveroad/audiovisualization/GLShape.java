@@ -7,52 +7,52 @@ import android.opengl.GLES20;
  */
 abstract class GLShape {
 
-	protected static final String VERTEX_POSITION = "vPosition";
-	protected static final String VERTEX_COLOR = "vColor";
-	private static final String VERTEX_SHADER_CODE =
-			"attribute vec4 " + VERTEX_POSITION + ";" +
-					"void main() {" +
-					"  gl_Position = " + VERTEX_POSITION + ";" +
-					"}";
-	private static final String FRAGMENT_SHADER_CODE =
-			"precision mediump float;" +
-					"uniform vec4 " + VERTEX_COLOR + ";" +
-					"void main() {" +
-					"  gl_FragColor = " + VERTEX_COLOR + ";" +
-					"}";
-	protected static final int COORDS_PER_VERTEX = 3;
-	protected static final int SIZE_OF_FLOAT = 4;
-	protected static final int SIZE_OF_SHORT = 2;
+    static final int COORDS_PER_VERTEX = 3;
+    static final int SIZE_OF_FLOAT = 4;
+    static final int SIZE_OF_SHORT = 2;
+    static final String VERTEX_COLOR = "vColor";
+    static final String VERTEX_POSITION = "vPosition";
 
-	/**
-	 * Shape color.
-	 */
-	private final float color[];
+    private static final String FRAGMENT_SHADER_CODE =
+            "precision mediump float;" +
+                    "uniform vec4 " + VERTEX_COLOR + ";" +
+                    "void main() {" +
+                    "  gl_FragColor = " + VERTEX_COLOR + ";" +
+                    "}";
+    private static final String VERTEX_SHADER_CODE =
+            "attribute vec4 " + VERTEX_POSITION + ";" +
+                    "void main() {" +
+                    "  gl_Position = " + VERTEX_POSITION + ";" +
+                    "}";
+    /**
+     * Shape color.
+     */
+    private final float mColor[];
 
-	/**
-	 * Program associated with shape.
-	 */
-	private final int program;
+    /**
+     * Program associated with shape.
+     */
+    private final int mProgram;
 
-	public GLShape(float[] color) {
-		this.color = color;
-		int vertexShader = GLRenderer.loadShader(GLES20.GL_VERTEX_SHADER, VERTEX_SHADER_CODE);
-		int fragmentShader = GLRenderer.loadShader(GLES20.GL_FRAGMENT_SHADER, FRAGMENT_SHADER_CODE);
-		program = GLES20.glCreateProgram();
-		GLES20.glAttachShader(program, vertexShader);
-		GLES20.glAttachShader(program, fragmentShader);
-		GLES20.glLinkProgram(program);
-	}
+    GLShape(float[] color) {
+        mColor = color;
+        int vertexShader = GLRenderer.loadShader(GLES20.GL_VERTEX_SHADER, VERTEX_SHADER_CODE);
+        int fragmentShader = GLRenderer.loadShader(GLES20.GL_FRAGMENT_SHADER, FRAGMENT_SHADER_CODE);
+        mProgram = GLES20.glCreateProgram();
+        GLES20.glAttachShader(mProgram, vertexShader);
+        GLES20.glAttachShader(mProgram, fragmentShader);
+        GLES20.glLinkProgram(mProgram);
+    }
 
-	protected float[] getColor() {
-		return color;
-	}
-
-	protected int getProgram() {
-		return program;
-	}
+    protected float[] getColor() {
+        return mColor;
+    }
 
     public void setColor(float[] color) {
-        System.arraycopy(color, 0, this.color, 0, this.color.length);
+        System.arraycopy(color, 0, mColor, 0, mColor.length);
+    }
+
+    int getProgram() {
+        return mProgram;
     }
 }
