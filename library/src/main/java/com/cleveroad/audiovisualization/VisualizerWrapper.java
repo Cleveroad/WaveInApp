@@ -5,6 +5,8 @@ import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
 import android.support.annotation.NonNull;
 
+import com.cleveroad.audiovisualization.utils.TunnelPlayerWorkaround;
+
 /**
  * Wrapper for visualizer.
  */
@@ -12,13 +14,13 @@ class VisualizerWrapper {
 
     private static final long WAIT_UNTIL_HACK = 500;
 	private Visualizer visualizer;
-    private MediaPlayer mediaPlayer;
+    private MediaPlayer mSilentPlayer;
     private Visualizer.OnDataCaptureListener captureListener;
     private int captureRate;
     private long lastZeroArrayTimestamp;
 
 	public VisualizerWrapper(@NonNull Context context, int audioSessionId, @NonNull final OnFftDataCaptureListener onFftDataCaptureListener) {
-        mediaPlayer = MediaPlayer.create(context, R.raw.av_workaround_1min);
+        initTunnelPlayerWorkaround(context);
 		visualizer = new Visualizer(audioSessionId);
         visualizer.setEnabled(false);
 		visualizer.setCaptureSize(Visualizer.getCaptureSizeRange()[1]);
@@ -50,12 +52,22 @@ class VisualizerWrapper {
         visualizer.setEnabled(true);
 	}
 
+    private void initTunnelPlayerWorkaround(@NonNull Context context) {
+        // Read "tunnel.decode" system property to determine
+        // the workaround is needed
+        if (TunnelPlayerWorkaround.isTunnelDecodeEnabled(context)) {
+            mSilentPlayer = TunnelPlayerWorkaround.createSilentMediaPlayer(context);
+        }
+    }
+
 	public void release() {
         visualizer.setEnabled(false);
         visualizer.release();
         visualizer = null;
-        mediaPlayer.release();
-        mediaPlayer = null;
+        if (mSilentPlayer != null) {
+            mSilentPlayer.release();
+            mSilentPlayer = null;
+        }
 	}
 
 	public void setEnabled(final boolean enabled) {

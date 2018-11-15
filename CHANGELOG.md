@@ -3,6 +3,7 @@
 ## Changelog
 | Version | Changes                         |
 | --- | --- |
+| v.1.0.1 | <ul><li>Fixed issues</li><li>Updated version of the support libraries</li><li>Updated version of the build tools</li></ul> |
 | v.0.9.4 | Fixed issues |
 | v.0.9.3 | Fixed concurrent modification exception. Added ability to set number of bubbles per layer |
 | v.0.9.2 | Added voice recording example. Added ability to build audio visualization renderer. |
