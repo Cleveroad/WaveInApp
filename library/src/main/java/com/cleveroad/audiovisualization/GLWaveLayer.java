@@ -2,11 +2,11 @@ package com.cleveroad.audiovisualization;
 
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Wave layer implementation.
@@ -44,7 +44,7 @@ class GLWaveLayer {
 		}
         this.usedBubbles = Collections.newSetFromMap(new ConcurrentHashMap<GLBubble, Boolean>());
         this.producedBubbles = Collections.newSetFromMap(new ConcurrentHashMap<GLBubble, Boolean>());
-        this.unusedBubbles = new LinkedList<>();
+        this.unusedBubbles = new ConcurrentLinkedQueue<>();
         allBubbles = generateBubbles(color, configuration.bubblesPerLayer);
 		Collections.addAll(unusedBubbles, allBubbles);
 	}
