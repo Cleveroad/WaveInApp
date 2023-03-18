@@ -99,7 +99,7 @@ class Utils {
 	}
 
 	public static float randomize(float value, Random random) {
-		float perc = between((random.nextInt(100) + 70) / 100, 0.7f, 1.3f);
+		float perc = between((random.nextInt(100) + 70) / 100f, 0.7f, 1.3f);
 		return perc * value;
 	}
 
